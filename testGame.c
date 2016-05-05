@@ -30,6 +30,9 @@ void testGame(){
     assert(getKPIpoints(g, 2) == 24);
     assert(getKPIpoints(g, 3) == 24);
     
+    assert (getDiscipline(g, 7) == STUDENT_MTV);
+    assert (getDiceValue (g, 7) == 11);
+    
     getARCs(g, 1);
     assert(getKPIpoints(g, 1) == 26);
     
