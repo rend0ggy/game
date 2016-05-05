@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
+#include <string.h>
 
 #include "Game.h"
 
@@ -11,21 +13,24 @@
                 
 #define DEFAULT_DICE {9,10,8,12,6,5,3,11,3,11,4,6,4,7,9,2,8,10,5}
 
+void testGame(Game g);
+
 int main (int argc, char* argv[]){
 
     int disciplines[] = DEFAULT_DISCIPLINES;
     int dice[] = DEFAULT_DICE;
     Game g = newGame (disciplines, dice);
-
+    testGame(g);
+    return EXIT_SUCCESS;
 }
 
-void testGame(){
+void testGame(Game g){
     
-    int i = getTurnNumber (g);
-    throwDice(g);
-    assert(getTurnNumber(g) == i+1);
-    
-    getTurnNumber(g) = -1;
+    assert(getTurnNumber(g) == -1);
+    throwDice(g, 7);
+    assert(getTurnNumber(g) == 0);
+   
+    assert(getTurnNumber(g) == -1);
     assert(getKPIpoints(g, 1) == 24);
     assert(getKPIpoints(g, 2) == 24);
     assert(getKPIpoints(g, 3) == 24);
@@ -36,7 +41,7 @@ void testGame(){
     getARCs(g, 1);
     assert(getKPIpoints(g, 1) == 26);
     
-    getG08s(g, 1);
+    getGO8s(g, 1);
     assert(getKPIpoints(g, 1) == 46);
     
     getCampuses(g, 1);
