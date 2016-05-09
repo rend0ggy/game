@@ -101,7 +101,7 @@ int getMostPublications (Game g){
 // return the current turn number of the game -1,0,1, ..
 int getTurnNumber (Game g){
     int turn = 0;
-    turn = g.numTurn;
+    turn = g->numTurn;
 
     return turn;
 }
