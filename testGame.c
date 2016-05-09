@@ -26,30 +26,33 @@ int main (int argc, char* argv[]){
 
 void testGame(Game g){
     
+    printf("Testing initial conditions:");
     assert(getTurnNumber(g) == -1);
-    throwDice(g, 7);
-    assert(getTurnNumber(g) == 0);
-   
-    assert(getTurnNumber(g) == -1);
-    assert(getKPIpoints(g, 1) == 24);
-    assert(getKPIpoints(g, 2) == 24);
-    assert(getKPIpoints(g, 3) == 24);
     
     assert (getDiscipline(g, 7) == STUDENT_MTV);
     assert (getDiceValue (g, 7) == 11);
+  
+    assert(getKPIpoints(g, UNI_A) == 24);
+    assert(getKPIpoints(g, UNI_B) == 24);
+    assert(getKPIpoints(g, UNI_C) == 24);
     
-    getARCs(g, 1);
-    assert(getKPIpoints(g, 1) == 26);
+    assert(getMostARCs(g) == NO_ONE);
+    assert(getMostPublications(g) == NO_ONE);
+    assert(getWhoseTurn(g) == NO_ONE);
     
-    getGO8s(g, 1);
-    assert(getKPIpoints(g, 1) == 46);
+    printf("Testing for legal actions:");
+    getARCs(g, UNI_A);
+    assert(getKPIpoints(g, UNI_A) == 26);
     
-    getCampuses(g, 1);
-    assert(getKPIpoints(g, 1) == 56);
+    getGO8s(g, UNI_A);
+    assert(getKPIpoints(g, UNI_A) == 46);
     
-    getIPs (g, 1);
-    assert(getKPIpoints(g, 1) == 66);
+    getCampuses(g, UNI_A);
+    assert(getKPIpoints(g, UNI_A) == 56);
     
-    getPublications(g, 1);
-    assert(getKPIpoints(g, 1) == 66);
+    getIPs (g, UNI_A);
+    assert(getKPIpoints(g, UNI_A) == 66);
+    
+    getPublications(g, UNI_A);
+    assert(getKPIpoints(g, UNI_A) == 66);
 }
