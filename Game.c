@@ -25,7 +25,9 @@ typedef struct _player{
 
 struct _game{
 	board Board;
-	person player[3];
+	player A;
+	player B;
+	player C;
 	int numTurn;
 };
 
@@ -183,23 +185,39 @@ int getARC(Game g, path pathToEdge){
 // or OBTAIN_IP_PATENT (they can make the move START_SPINOFF)
 // you can assume that any pths passed in are NULL terminated strings.
 int isLegalAction (Game g, action a){
+    int legal = 0;
     
-    if (a ==  BUILD_CAMPUS){
-        if (player.numBPS < 1 || player.numBQN < 0){
-            RETURN FAULSE;
-        } 
-    } else if (a == BUILD_GO8){
-        
-    } else if (a == OBTAIN_ARC){
+    if (a == BUILD_CAMPUS){
+        if (player.numBPS >= 1 && player.numBQN >= 1 && player.numMJ >= 1 && player.numMTV >= 1){
+            legal = TRUE;
+        }
+    }
+    
+    if (a == BUILD_GO8){
+        if (player.numMJ >= 2 && player.numMMONEY >= 3){
+            legal = TRUE;
+       }
+    }
+    
+    if (a == OBTAIN_ARC){
+        if (player.numBPS >= 1 && player.numBQN >= 1){
+            legal = TRUE;
+        }
+    }
       
-    } else if (a == START_SPINOFF){
+    if (a == START_SPINOFF)
       
-    } else if (a == OBTAIN_PUBLICATION){
+    if (a == OBTAIN_PUBLICATION)
    
-    } else if (a == OBTAIN_IP_PATENT){
+    if (a == OBTAIN_IP_PATENT)
             
-    } else if (a == RETRAIN_STUDENTS){
-    return 0;
+    if (a == RETRAIN_STUDENTS){
+        if (player.numBPS >= 3 || player.numBQN >= 3 || player.numMJ >= 3 
+                || player.numMTV >= 3 || player.numMMONEY >= 3){
+            legal = TRUE;
+        }
+    }
+    return legal;
 }
 
 // --- get data about a specified player ---
