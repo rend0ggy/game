@@ -16,6 +16,17 @@ typedef struct _player{
 	position posCampuses[];
 	position posArcGrants[];
 	int kpi;
+	int numArcs;
+	int numCampuses;
+	int numGo8;
+	int numPatents;
+	int numPapers;
+	int numTHD;
+	int numBPS;
+	int numBQN;
+	int numMJ;
+	int numMTV;
+	int numMMONEY;
 }player;
 
 typedef struct _position{
@@ -44,6 +55,10 @@ void makeAction (Game g, action a){
 // the game starts in turn -1 (we call this state "Terra Nullis") and 
 // moves to turn 0 as soon as the first dice is thrown. 
 void throwDice (Game g, int diceScore){
+    if (diceScore > 0){
+        g->numTurn ++;
+    }
+// in main function declare numTurn starts at -1
 
 }
 
@@ -51,15 +66,19 @@ void throwDice (Game g, int diceScore){
 // regionID is the index of the region in the newGame arrays (above) 
 // see discipline codes above
 int getDiscipline (Game g, int regionID){
+    int i = regionID;
     int discipline = 0;
+    discipline = discipline[i]
     
-    return discipline;
+    return student;
 }
 
 // what dice value produces students in the specified region?
 // 2..12
 int getDiceValue (Game g, int regionID){
+    int i = regionID;
     int diceValue = 0;
+    diceValue = dice[i];
     
     return diceValue;
 }
@@ -81,7 +100,8 @@ int getMostPublications (Game g){
 
 // return the current turn number of the game -1,0,1, ..
 int getTurnNumber (Game g){
-// use a while loop possibly
+    int turn = 0;
+    turn = g.numTurn;
 
     return turn;
 }
@@ -89,6 +109,15 @@ int getTurnNumber (Game g){
 // return the player id of the player whose turn it is 
 // the result of this function is NO_ONE during Terra Nullis
 int getWhoseTurn (Game g){
+    int whoseTurn = 0;
+    int turn = getTurnNumber(g);
+    if (getTurnNumber%3 == 0){
+        whoseTurn = UNI_A;
+    } else if (getTurnNumber%3 == 1){
+        whoseTurn = UNI_B;
+    } else if (getTurnNumber%3 == 2){
+        whoseTurn = UNI_C;
+    }
 
     return whoseTurn;
 }
@@ -140,36 +169,42 @@ int isLegalAction (Game g, action a){
 
 // return the number of KPI points the specified player currently has
 int getKPIpoints (Game g, int player){
+    int points = player.kpi;
 
     return points;
 }
 
 // return the number of ARC grants the specified player currently has
 int getARCs (Game g, int player){
+    int numArcs = player.numArcs;
 
     return numArcs;
 }
 
 // return the number of GO8 campuses the specified player currently has
 int getGO8s (Game g, int player){
+    int numGo8 = player.Go8;
 
     return numGo8;
 }
 
 // return the number of normal Campuses the specified player currently has
 int getCampuses (Game g, int player){
+    int numCampus = player.numCampuses;
 
     return numCampus;
 }
 
 // return the number of IP Patents the specified player currently has
 int getIPs (Game g, int player){
+    int numPatents = player.numPatents;
 
     return numPatents;
 }
 
 // return the number of Publications the specified player currently has
 int getPublications (Game g, int player){
+    int numPapers = player.numPapers;
 
     return numPapers;
 }
@@ -177,6 +212,7 @@ int getPublications (Game g, int player){
 // return the number of students of the specified discipline type 
 // the specified player currently has
 int getStudents (Game g, int player, int discipline){
+    
 
     return numStudents;
 }
