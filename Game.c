@@ -1,11 +1,5 @@
 #include "Game.h"
 
-struct _game{
-	board Board;
-	person player[3];
-	int numTurn;
-}game;
-
 typedef struct _board{
 	int regions[19];     //(purple, yellow yellow;
 	int roll[19];        //(6 10 8;
@@ -29,11 +23,21 @@ typedef struct _player{
 	int numMMONEY;
 }player;
 
+struct _game{
+	board Board;
+	person player[3];
+	int numTurn;
+};
+
 typedef struct _position{
 	int x;
 	int y;
 	int direction;
 }position;
+
+char _path{
+    char path[PATH_LIMIT];
+};
 
 Game newGame (int discipline[], int dice[]);
 
@@ -47,7 +51,25 @@ void disposeGame (Game g){
 // The function may assume that the action requested is legal.
 // START_SPINOFF is not a legal action here
 void makeAction (Game g, action a){
-
+    while(isLegalAction() == TRUE){
+        if (a == PASS){
+            g->numTurn++;
+        } else if (a ==  BUILD_CAMPUS){
+            isLegalAction();
+        } else if (a == BUILD_GO8){
+            isLegalAction();        
+        } else if (a == OBTAIN_ARC){
+            isLegalAction();        
+        } else if (a == START_SPINOFF){
+            isLegalAction();        
+        } else if (a == OBTAIN_PUBLICATION){
+            isLegalAction();        
+        } else if (a == OBTAIN_IP_PATENT){
+            isLegalAction();        
+        } else if (a == RETRAIN_STUDENTS){
+            isLegalAction();        
+        }
+    }
 }
 
 // advance the game to the next turn, 
@@ -161,7 +183,22 @@ int getARC(Game g, path pathToEdge){
 // or OBTAIN_IP_PATENT (they can make the move START_SPINOFF)
 // you can assume that any pths passed in are NULL terminated strings.
 int isLegalAction (Game g, action a){
-
+    
+    if (a ==  BUILD_CAMPUS){
+        if (player.numBPS < 1 || player.numBQN < 0){
+            RETURN FAULSE;
+        } 
+    } else if (a == BUILD_GO8){
+        
+    } else if (a == OBTAIN_ARC){
+      
+    } else if (a == START_SPINOFF){
+      
+    } else if (a == OBTAIN_PUBLICATION){
+   
+    } else if (a == OBTAIN_IP_PATENT){
+            
+    } else if (a == RETRAIN_STUDENTS){
     return 0;
 }
 
