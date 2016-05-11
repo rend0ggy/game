@@ -52,25 +52,24 @@ void disposeGame (Game g){
 // game state accordingly.  
 // The function may assume that the action requested is legal.
 // START_SPINOFF is not a legal action here
-void makeAction (Game g, action a){
-    while(isLegalAction(g,actionCode) == TRUE){
-        if (action.actionCode== PASS){
-            g->numTurn++;
-        } else if (action.actionCode==  BUILD_CAMPUS){
-            isLegalAction(g,actionCode);
-        } else if (action.actionCode== BUILD_GO8){
-            isLegalAction(g,actionCode);        
-        } else if (action.actionCode== OBTAIN_ARC){
-            isLegalAction(g,actionCode);        
-        } else if (action.actionCode== START_SPINOFF){
-            isLegalAction(g,actionCode);        
-        } else if (action.actionCode== OBTAIN_PUBLICATION){
-            isLegalAction(g,actionCode);        
-        } else if (action.actionCode== OBTAIN_IP_PATENT){
-            isLegalAction(g,actionCode);        
-        } else if (action.actionCode== RETRAIN_STUDENTS){
-            isLegalAction(g,actionCode);        
-        }
+void makeAction (Game g, action a)
+// removed while loop --> use while loop for turns in runGame.c
+    if (a.actionCode == PASS){
+        g->numTurn++;
+    } else if (a.actionCode ==  BUILD_CAMPUS){
+        isLegalAction(g, actionCode);
+    } else if (a.actionCode == BUILD_GO8){
+        isLegalAction(g, actionCode);        
+    } else if (a.actionCode == OBTAIN_ARC){
+        isLegalAction(g, actionCode);        
+    } else if (a.actionCode == START_SPINOFF){
+        isLegalAction(g, actionCode);        
+    } else if (a.actionCode == OBTAIN_PUBLICATION){
+        isLegalAction(g, actionCode);        
+    } else if (a.actionCode == OBTAIN_IP_PATENT){
+        isLegalAction(g, actionCode);        
+    } else if (a.actionCode == RETRAIN_STUDENTS){
+        isLegalAction(g,actionCode);        
     }
 }
 
@@ -188,31 +187,31 @@ int getARC(Game g, path pathToEdge){
 int isLegalAction (Game g, action a){
     int legal = 0;
     
-    if (action.actionCode== BUILD_CAMPUS){
+    if (a.actionCode == BUILD_CAMPUS){
         if (player.numBPS >= 1 && player.numBQN >= 1 && player.numMJ >= 1 && player.numMTV >= 1){
             legal = TRUE;
         }
     }
     
-    if (action.actionCode== BUILD_GO8){
+    if (a.actionCode == BUILD_GO8){
         if (player.numMJ >= 2 && player.numMMONEY >= 3){
             legal = TRUE;
        }
     }
     
-    if (action.actionCode== OBTAIN_ARC){
+    if (a.actionCode == OBTAIN_ARC){
         if (player.numBPS >= 1 && player.numBQN >= 1){
             legal = TRUE;
         }
     }
       
-    if (action.actionCode== START_SPINOFF)
+/*    if (a.actionCode == START_SPINOFF)
       
-    if (action.actionCode== OBTAIN_PUBLICATION)
+    if (a.actionCode == OBTAIN_PUBLICATION)
    
-    if (action.actionCode== OBTAIN_IP_PATENT)
-            
-    if (action.actionCode== RETRAIN_STUDENTS){
+    if (a.actionCode== OBTAIN_IP_PATENT)
+    */
+    if (a.actionCode== RETRAIN_STUDENTS){
         if (player.numBPS >= 3 || player.numBQN >= 3 || player.numMJ >= 3 
                 || player.numMTV >= 3 || player.numMMONEY >= 3){
             legal = TRUE;
