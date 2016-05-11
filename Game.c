@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "Game.h"
 
 typedef struct _board{
@@ -29,6 +31,7 @@ struct _game{
     player B;
     player C;
     int numTurn;
+    int currentTurn;
 };
 
 /*typedef struct _position{
@@ -36,12 +39,20 @@ struct _game{
     int y;
     int direction;
 }position;
-
 char _path{
     char path[PATH_LIMIT];
 };
 */
-Game newGame (int discipline[], int dice[]);
+Game newGame (int discipline[], int dice[])
+{
+    Game g = (Game) malloc(sizeof(struct_game));
+    g->discipline = discipline;
+    g->dice = dice;
+    g->currentTurn = -1;
+
+
+    return g;
+}
 
 // free all the memory malloced for the game
 void disposeGame (Game g){
@@ -52,24 +63,25 @@ void disposeGame (Game g){
 // game state accordingly.  
 // The function may assume that the action requested is legal.
 // START_SPINOFF is not a legal action here
-void makeAction (Game g, action a)
-// removed while loop --> use while loop for turns in runGame.c
-    if (a.actionCode == PASS){
-        g->numTurn++;
-    } else if (a.actionCode ==  BUILD_CAMPUS){
-        isLegalAction(g, actionCode);
-    } else if (a.actionCode == BUILD_GO8){
-        isLegalAction(g, actionCode);        
-    } else if (a.actionCode == OBTAIN_ARC){
-        isLegalAction(g, actionCode);        
-    } else if (a.actionCode == START_SPINOFF){
-        isLegalAction(g, actionCode);        
-    } else if (a.actionCode == OBTAIN_PUBLICATION){
-        isLegalAction(g, actionCode);        
-    } else if (a.actionCode == OBTAIN_IP_PATENT){
-        isLegalAction(g, actionCode);        
-    } else if (a.actionCode == RETRAIN_STUDENTS){
-        isLegalAction(g,actionCode);        
+void makeAction (Game g, action a){
+    while(isLegalAction(g,actionCode) == TRUE){
+        if (action.actionCode== PASS){
+            g->numTurn++;
+        } else if (action.actionCode==  BUILD_CAMPUS){
+            isLegalAction(g,actionCode);
+        } else if (action.actionCode== BUILD_GO8){
+            isLegalAction(g,actionCode);        
+        } else if (action.actionCode== OBTAIN_ARC){
+            isLegalAction(g,actionCode);        
+        } else if (action.actionCode== START_SPINOFF){
+            isLegalAction(g,actionCode);        
+        } else if (action.actionCode== OBTAIN_PUBLICATION){
+            isLegalAction(g,actionCode);        
+        } else if (action.actionCode== OBTAIN_IP_PATENT){
+            isLegalAction(g,actionCode);        
+        } else if (action.actionCode== RETRAIN_STUDENTS){
+            isLegalAction(g,actionCode);        
+        }
     }
 }
 
@@ -116,11 +128,24 @@ int getMostARCs (Game g){
 
 // which university currently has the prestige award for the most pubs?
 // this is NO_ONE until the first publication is made.
-int getMostPublications (Game g){
+int getMostPublications (Game g)
+{
+    if (g->numPapers == 0)
+    {
+        return NO_ONE;
+    }
 
-    return 0;
+    int max = g->player[0].numPapers;
+
+    for (int i = 0; i < numPlayer; ++i)
+    {
+        if (g->player[i].numPapers > max)
+        {
+            max = g->player[i].numPapers;
+        }
+    }
+    return max;
 }
-
 // return the current turn number of the game -1,0,1, ..
 int getTurnNumber (Game g){
     int turn = 0;
@@ -187,31 +212,31 @@ int getARC(Game g, path pathToEdge){
 int isLegalAction (Game g, action a){
     int legal = 0;
     
-    if (a.actionCode == BUILD_CAMPUS){
+    if (action.actionCode== BUILD_CAMPUS){
         if (player.numBPS >= 1 && player.numBQN >= 1 && player.numMJ >= 1 && player.numMTV >= 1){
             legal = TRUE;
         }
     }
     
-    if (a.actionCode == BUILD_GO8){
+    if (action.actionCode== BUILD_GO8){
         if (player.numMJ >= 2 && player.numMMONEY >= 3){
             legal = TRUE;
        }
     }
     
-    if (a.actionCode == OBTAIN_ARC){
+    if (action.actionCode== OBTAIN_ARC){
         if (player.numBPS >= 1 && player.numBQN >= 1){
             legal = TRUE;
         }
     }
       
-/*    if (a.actionCode == START_SPINOFF)
+    if (action.actionCode== START_SPINOFF)
       
-    if (a.actionCode == OBTAIN_PUBLICATION)
+    if (action.actionCode== OBTAIN_PUBLICATION)
    
-    if (a.actionCode== OBTAIN_IP_PATENT)
-    */
-    if (a.actionCode== RETRAIN_STUDENTS){
+    if (action.actionCode== OBTAIN_IP_PATENT)
+            
+    if (action.actionCode== RETRAIN_STUDENTS){
         if (player.numBPS >= 3 || player.numBQN >= 3 || player.numMJ >= 3 
                 || player.numMTV >= 3 || player.numMMONEY >= 3){
             legal = TRUE;
