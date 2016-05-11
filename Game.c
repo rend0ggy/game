@@ -15,8 +15,8 @@ typedef struct _position{
 
 typedef struct _player{
     int numPlayer;
-        position posCampuses[];
-        position posArcGrants[];
+        position posCampuses;
+        position posArcGrants;
         int kpi;
         int numArcs;
         int numCampuses;
