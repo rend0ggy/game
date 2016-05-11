@@ -7,6 +7,12 @@ typedef struct _board{
         int roll[19];        //(6 10 8;
 }board;
 
+typedef struct _position{
+        int x;
+        int y;
+        int direction;
+}position;
+
 typedef struct _player{
     int numPlayer;
         position posCampuses[];
@@ -34,17 +40,6 @@ struct _game{
     int currentTurn;
     player players[NUM_UNIS];
     int uni_num;
-};
-
-typedef struct _position{
-        int x;
-        int y;
-        int direction;
-}position;
-
-
-char _path{
-    char path[PATH_LIMIT];
 };
 
 Game newGame (int discipline[], int dice[])
