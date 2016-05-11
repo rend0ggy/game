@@ -32,6 +32,8 @@ struct _game{
     player C;
     int numTurn;
     int currentTurn;
+    player players[NUM_UNIS];
+    int uni_num;
 };
 
 typedef struct _position{
@@ -137,13 +139,13 @@ int getMostPublications (Game g)
         return NO_ONE;
     }
 
-    int max = g->player[0].numPapers;
+    int max = g->players[0].numPapers;
 
-    for (int i = 0; i < numPlayer; ++i)
+    for (int i = 0; i < uni_num; ++i)
     {
-        if (g->player[i].numPapers > max)
+        if (g->players[i].numPapers > max)
         {
-            max = g->player[i].numPapers;
+            max = g->players[i].numPapers;
         }
     }
     return max;
@@ -233,10 +235,22 @@ int isLegalAction (Game g, action a){
     }
       
     if (a== START_SPINOFF)
+    {
+        if (player.numMJ >= 1 || player.numMTV >= 1 || player.numMMONEY >= 1)
+        {
+            legal = TRUE;
+        }
+    }
       
     if (a== OBTAIN_PUBLICATION)
+    {
+        legal = TRUE;
+    }
    
     if (a== OBTAIN_IP_PATENT)
+    {
+        legal = TRUE;
+    }
             
     if (a== RETRAIN_STUDENTS){
         if (player.numBPS >= 3 || player.numBQN >= 3 || player.numMJ >= 3 
