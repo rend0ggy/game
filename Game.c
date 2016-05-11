@@ -152,26 +152,21 @@ int getMostPublications (Game g)
 }
 // return the current turn number of the game -1,0,1, ..
 int getTurnNumber (Game g){
-    int turn = 0;
-    turn = g->numTurn;
-
-    return turn;
+    int numTurn = g->numTurn;
+    return numTurn;
 }
 
 // return the player id of the player whose turn it is 
 // the result of this function is NO_ONE during Terra Nullis
 int getWhoseTurn (Game g){
-    int whoseTurn = 0;
-    int turn = getTurnNumber(g);
-    if (getTurnNumber%3 == 0){
-        whoseTurn = UNI_A;
-    } else if (getTurnNumber%3 == 1){
-        whoseTurn = UNI_B;
-    } else if (getTurnNumber%3 == 2){
-        whoseTurn = UNI_C;
+    int currentPlayer;
+    if (g->currentTurn == -1)
+    {
+        currentPlayer = NO_ONE;
+    } else {
+        currentPlayer = (((g->currentTurn) % NUM_UNIS) + 1);
     }
-
-    return whoseTurn;
+    return currentPlayer;
 }
 
 //
