@@ -23,8 +23,8 @@ void disposeGame (Game g){
 // game state accordingly.  
 // The function first tests whether the requested actoin is legal
 // If the action is legal it then changes global game variables through each function
-void makeAction (Game g, action a, player p){
-    if(isLegalAction(g,a,p) == TRUE){
+void makeAction (Game g, action a){
+    if(isLegalAction(g,a) == TRUE){
         if (a.actionCode == PASS){
             g->numTurn++;
         } else if (a.actionCode ==  BUILD_CAMPUS){
@@ -90,24 +90,9 @@ int getMostARCs (Game g){
 // this is NO_ONE until the first publication is made.
 int getMostPublications (Game g)
 {
-    /*if (g->numPapers == 0)
-    {
-        return NO_ONE;
-    }*/
-
-    int max = g->players[0].numPapers;
-    int i = 0;
-
-
-    while (i < g->uni_num)
-    {
-        if (g->players[i].numPapers > max)
-        {
-            max = g->players[i].numPapers;
-        }
-        i++;
-    }
-    return max;
+	int playerNumber = NO_ONE;
+	if()
+	return playerNumber;
 }
 // return the current turn number of the game -1,0,1, ..
 int getTurnNumber (Game g){
@@ -166,30 +151,30 @@ int getARC(Game g, path pathToEdge){
 // It is not legal for a player to make the moves OBTAIN_PUBLICATION 
 // or OBTAIN_IP_PATENT (they can make the move START_SPINOFF)
 // you can assume that any pths passed in are NULL terminated strings.
-int isLegalAction (Game g, action a, player p){
+int isLegalAction (Game g, action a){
     int legal = 0;
     
     if (a.actionCode == BUILD_CAMPUS){
-        if (p.numBPS >= 1 && p.numBQN >= 1 && p.numMJ >= 1 && p.numMTV >= 1){
+        if (a.p.numBPS >= 1 && a.p.numBQN >= 1 && a.p.numMJ >= 1 && a.p.numMTV >= 1){
             legal = TRUE;
         }
     }
     
     if (a.actionCode == BUILD_GO8){
-        if (p.numMJ >= 2 && p.numMMONEY >= 3){
+        if (p.numMJ >= 2 && a.p.numMMONEY >= 3){
             legal = TRUE;
        }
     }
     
     if (a.actionCode == OBTAIN_ARC){
-        if (p.numBPS >= 1 && p.numBQN >= 1){
+        if (a.p.numBPS >= 1 && a.p.numBQN >= 1){
             legal = TRUE;
         }
     }
       
     if (a.actionCode == START_SPINOFF)
     {
-        if (p.numMJ >= 1 || p.numMTV >= 1 || p.numMMONEY >= 1)
+        if (a.p.numMJ >= 1 || a.p.numMTV >= 1 || a.p.numMMONEY >= 1)
         {
             legal = TRUE;
         }
@@ -206,8 +191,8 @@ int isLegalAction (Game g, action a, player p){
     }
             
     if (a.actionCode == RETRAIN_STUDENTS){
-        if (p.numBPS >= 3 || p.numBQN >= 3 || p.numMJ >= 3 
-                || p.numMTV >= 3 || p.numMMONEY >= 3){
+        if (a.p.numBPS >= 3 || a.p.numBQN >= 3 || a.p.numMJ >= 3 
+                || a.p.numMTV >= 3 || a.p.numMMONEY >= 3){
             legal = TRUE;
         }
     }
