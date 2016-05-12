@@ -101,14 +101,6 @@ typedef char path[PATH_LIMIT];
 // for another action and repeat this over and over again until they 
 // return PASS at which time you'll throw the dice (using 
 // throwDice()) and advance the game to the next player.  And repeat.
-typedef struct _action {
-   int actionCode;  // see #defines above
-   path destination; // if the action operates on a vertex or ARC this
-                     // specifies *which* vertex or path.  unused 
-                     // otherwise
-   int disciplineFrom;  // used for the retrain students action
-   int disciplineTo;    // used for the retrain students action
-} action;
 
 typedef struct _position{
     int x;
@@ -161,6 +153,16 @@ struct _game{
     player C;
 };
 
+typedef struct _action {
+   int actionCode;  // see #defines above
+   path destination; // if the action operates on a vertex or ARC this
+                     // specifies *which* vertex or path.  unused 
+                     // otherwise
+   int disciplineFrom;  // used for the retrain students action
+   int disciplineTo;    // used for the retrain students action
+   player p;
+} action;
+
 /* **** Functions which change the game aka SETTERS **** */
 // make a new game, given the disciplines produced by each
 // region, and the value on the dice discs in each region.
@@ -195,7 +197,7 @@ void disposeGame (Game g);
 // game state accordingly.  
 // The function may assume that the action requested is legal.
 // START_SPINOFF is not a legal action here
-void makeAction (Game g, action a, player p);
+void makeAction (Game g, action a);
 
 // advance the game to the next turn, 
 // assuming that the dice has just been rolled and produced diceScore
@@ -262,7 +264,7 @@ int getARC(Game g, path pathToEdge);
 // It is not legal for a player to make the moves OBTAIN_PUBLICATION 
 // or OBTAIN_IP_PATENT (they can make the move START_SPINOFF)
 // you can assume that any pths passed in are NULL terminated strings.
-int isLegalAction (Game g, action a,player p);
+int isLegalAction (Game g, action a);
 
 // --- get data about a specified player ---
 
