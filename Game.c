@@ -151,6 +151,12 @@ int getCampus(Game g, path pathToVertex){
     return 0;
 }
 
+int regionAssociatedWithPOS[3](position p,int dice)
+{
+	// This function returns EVERY dice roll that would lead to a new student 
+	// for a given campus (i.e. the number on the sorounding hexagons)
+}
+
 // the contents of the given edge (ie ARC code or vacent ARC)
 int getARC(Game g, path pathToEdge){
 
