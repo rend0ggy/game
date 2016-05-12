@@ -105,7 +105,6 @@ typedef char path[PATH_LIMIT];
 typedef struct _position{
     int x;
     int y;
-    int direction;
 }position;
 
 typedef struct _player{
