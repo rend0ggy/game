@@ -108,20 +108,10 @@ typedef struct _position{
     int direction;
 }position;
 
-typedef struct _campuses{
-  int campusNum[150];
-  position pos[150];
-}campuses;
-
-typedef struct _arcGrants{
-  int arcNum[150];
-  position pos[150];  
-}arcGrants;
-
 typedef struct _player{
     int numPlayer;
-        campuses Campus;
-        arcGrants Arc;
+        campuses pos[150];
+        arcGrants pos[150];
         int kpi;
         int numArcs;
         int numCampuses;
