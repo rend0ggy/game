@@ -156,6 +156,9 @@ struct _game{
     player players[NUM_UNIS];
     int uni_num;
     int dice;
+    player A;
+    player B;
+    player C;
 };
 
 /* **** Functions which change the game aka SETTERS **** */
