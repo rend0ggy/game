@@ -117,8 +117,8 @@ typedef struct _position{
 }position;
 
 typedef struct _campuses{
-  int campusNum;
-  position pos;
+  int campusNum[150];
+  position pos[150];
 }campuses;
 
 typedef struct _arcGrants{
