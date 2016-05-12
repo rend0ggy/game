@@ -110,6 +110,54 @@ typedef struct _action {
    int disciplineTo;    // used for the retrain students action
 } action;
 
+typedef struct _position{
+    int x;
+    int y;
+    int direction;
+}position;
+
+typedef struct _campuses{
+  int campusNum;
+  position pos;
+}campuses;
+
+typedef struct _arcGrants{
+  int arcNum[150];
+  position pos[150];  
+}arcGrants;
+
+typedef struct _player{
+    int numPlayer;
+        campuses Campus;
+        arcGrants Arc;
+        int kpi;
+        int numArcs;
+        int numCampuses;
+        int numGo8;
+        int numPatents;
+        int numPapers;
+        int numTHD; //student
+        int numBPS; // student
+        int numBQN; // student
+        int numMJ; // student
+        int numMTV; // student
+        int numMMONEY;
+}player;
+
+typedef struct _board{
+        int regions[19];     //(purple, yellow yellow;
+        int roll[19];        //(6 10 8;
+}board;
+
+struct _game{
+    board Board;
+    int numTurn;
+    int currentTurn;
+    player players[NUM_UNIS];
+    int uni_num;
+    int dice;
+};
+
 /* **** Functions which change the game aka SETTERS **** */
 // make a new game, given the disciplines produced by each
 // region, and the value on the dice discs in each region.
@@ -144,7 +192,7 @@ void disposeGame (Game g);
 // game state accordingly.  
 // The function may assume that the action requested is legal.
 // START_SPINOFF is not a legal action here
-void makeAction (Game g, action a);
+void makeAction (Game g, action a, player p);
 
 // advance the game to the next turn, 
 // assuming that the dice has just been rolled and produced diceScore
@@ -211,36 +259,36 @@ int getARC(Game g, path pathToEdge);
 // It is not legal for a player to make the moves OBTAIN_PUBLICATION 
 // or OBTAIN_IP_PATENT (they can make the move START_SPINOFF)
 // you can assume that any pths passed in are NULL terminated strings.
-int isLegalAction (Game g, action a);
+int isLegalAction (Game g, action a,player p);
 
 // --- get data about a specified player ---
 
 // return the number of KPI points the specified player currently has
-int getKPIpoints (Game g, int player);
+int getKPIpoints (Game g, player p);
 
 // return the number of ARC grants the specified player currently has
-int getARCs (Game g, int player);
+int getARCs (Game g, player p);
 
 // return the number of GO8 campuses the specified player currently has
-int getGO8s (Game g, int player);
+int getGO8s (Game g, player p);
 
 // return the number of normal Campuses the specified player currently has
-int getCampuses (Game g, int player);
+int getCampuses (Game g, player p);
 
 // return the number of IP Patents the specified player currently has
-int getIPs (Game g, int player);
+int getIPs (Game g, player p);
 
 // return the number of Publications the specified player currently has
-int getPublications (Game g, int player);
+int getPublications (Game g, player p);
 
 // return the number of students of the specified discipline type 
 // the specified player currently has
-int getStudents (Game g, int player, int discipline);
+int getStudents (Game g, player p, int discipline);
 
 // return how many students of discipline type disciplineFrom
 // the specified player would need to retrain in order to get one 
 // student of discipline type disciplineTo.  This will depend 
 // on what retraining centers, if any, they have a campus at.
-int getExchangeRate (Game g, int player, 
+int getExchangeRate (Game g, player p, 
                      int disciplineFrom, int disciplineTo);
 

@@ -2,51 +2,12 @@
 #include <stdlib.h>
 #include "Game.h"
 
-typedef struct _board{
-        int regions[19];     //(purple, yellow yellow;
-        int roll[19];        //(6 10 8;
-}board;
-
-typedef struct _position{
-        int x;
-        int y;
-        int direction;
-}position;
-
-typedef struct _player{
-    int numPlayer;
-        position posCampuses;
-        position posArcGrants;
-        int kpi;
-        int numArcs;
-        int numCampuses;
-        int numGo8;
-        int numPatents;
-        int numPapers;
-        int numTHD;
-        int numBPS;
-        int numBQN;
-        int numMJ;
-        int numMTV;
-        int numMMONEY;
-}player;
-
-struct _game{
-    board Board;
-    player A;
-    player B;
-    player C;
-    int numTurn;
-    int currentTurn;
-    player players[NUM_UNIS];
-    int uni_num;
-};
-
+// create a new game and return to the main game loop
+// The game structure stores all global information about the game
 Game newGame (int discipline[], int dice[])
 {
-    Game g = (Game) malloc(sizeof(struct_game));
-    g->discipline = discipline;
-    g->dice = dice;
+    Game g = malloc(sizeof(struct _game));
+    g->dice = 0;
     g->currentTurn = -1;
 
 
@@ -60,26 +21,26 @@ void disposeGame (Game g){
 
 // make the specified action for the current player and update the 
 // game state accordingly.  
-// The function may assume that the action requested is legal.
-// START_SPINOFF is not a legal action here
-void makeAction (Game g, action a){
-    while(isLegalAction() == TRUE){
-        if (a== PASS){
+// The function first tests whether the requested actoin is legal
+// If the action is legal it then changes global game variables through each function
+void makeAction (Game g, action a, player p){
+    if(isLegalAction(g,a,p) == TRUE){
+        if (a.actionCode == PASS){
             g->numTurn++;
-        } else if (a==  BUILD_CAMPUS){
-            isLegalAction();
-        } else if (a== BUILD_GO8){
-            isLegalAction();        
-        } else if (a== OBTAIN_ARC){
-            isLegalAction();        
-        } else if (a== START_SPINOFF){
-            isLegalAction();        
-        } else if (a== OBTAIN_PUBLICATION){
-            isLegalAction();        
-        } else if (a== OBTAIN_IP_PATENT){
-            isLegalAction();        
-        } else if (a== RETRAIN_STUDENTS){
-            isLegalAction();        
+        } else if (a.actionCode ==  BUILD_CAMPUS){
+            //addCampus(Game g,player p);
+        } else if (a.actionCode == BUILD_GO8){
+        	//addGO8(Game g,player p);
+        } else if (a.actionCode== OBTAIN_ARC){
+        	//obtainARC(Game g, player p);
+        } else if (a.actionCode == START_SPINOFF){
+        	//startSpinoff(Game g, player p);
+        } else if (a.actionCode == OBTAIN_PUBLICATION){
+        	//obtainPublication(Game g, player p);
+        } else if (a.actionCode == OBTAIN_IP_PATENT){
+        	//obtainIP(Game g, player p)
+        } else if (a.actionCode == RETRAIN_STUDENTS){
+        	//retrainStudents(Game g,player p);
         }
     }
 }
@@ -102,9 +63,9 @@ void throwDice (Game g, int diceScore){
 int getDiscipline (Game g, int regionID){
     int i = regionID;
     int discipline = 0;
-    discipline = discipline[i]
+    //discipline = discipline[i];
     
-    return student;
+    return discipline;
 }
 
 // what dice value produces students in the specified region?
@@ -112,7 +73,7 @@ int getDiscipline (Game g, int regionID){
 int getDiceValue (Game g, int regionID){
     int i = regionID;
     int diceValue = 0;
-    diceValue = dice[i];
+    //diceValue = g.dice;
     
     return diceValue;
 }
@@ -129,19 +90,22 @@ int getMostARCs (Game g){
 // this is NO_ONE until the first publication is made.
 int getMostPublications (Game g)
 {
-    if (g->numPapers == 0)
+    /*if (g->numPapers == 0)
     {
         return NO_ONE;
-    }
+    }*/
 
     int max = g->players[0].numPapers;
+    int i = 0;
 
-    for (int i = 0; i < uni_num; ++i)
+
+    while (i < g->uni_num)
     {
         if (g->players[i].numPapers > max)
         {
             max = g->players[i].numPapers;
         }
+        i++;
     }
     return max;
 }
@@ -164,8 +128,7 @@ int getWhoseTurn (Game g){
     return currentPlayer;
 }
 
-//
- return the contents of the given vertex (ie campus code or 
+//return the contents of the given vertex (ie campus code or 
 // VACANT_VERTEX)
 int getCampus(Game g, path pathToVertex){
 
@@ -203,48 +166,48 @@ int getARC(Game g, path pathToEdge){
 // It is not legal for a player to make the moves OBTAIN_PUBLICATION 
 // or OBTAIN_IP_PATENT (they can make the move START_SPINOFF)
 // you can assume that any pths passed in are NULL terminated strings.
-int isLegalAction (Game g, action a){
+int isLegalAction (Game g, action a, player p){
     int legal = 0;
     
-    if (a== BUILD_CAMPUS){
-        if (player.numBPS >= 1 && player.numBQN >= 1 && player.numMJ >= 1 && player.numMTV >= 1){
+    if (a.actionCode == BUILD_CAMPUS){
+        if (p.numBPS >= 1 && p.numBQN >= 1 && p.numMJ >= 1 && p.numMTV >= 1){
             legal = TRUE;
         }
     }
     
-    if (a== BUILD_GO8){
-        if (player.numMJ >= 2 && player.numMMONEY >= 3){
+    if (a.actionCode == BUILD_GO8){
+        if (p.numMJ >= 2 && p.numMMONEY >= 3){
             legal = TRUE;
        }
     }
     
-    if (a== OBTAIN_ARC){
-        if (player.numBPS >= 1 && player.numBQN >= 1){
+    if (a.actionCode == OBTAIN_ARC){
+        if (p.numBPS >= 1 && p.numBQN >= 1){
             legal = TRUE;
         }
     }
       
-    if (a== START_SPINOFF)
+    if (a.actionCode == START_SPINOFF)
     {
-        if (player.numMJ >= 1 || player.numMTV >= 1 || player.numMMONEY >= 1)
+        if (p.numMJ >= 1 || p.numMTV >= 1 || p.numMMONEY >= 1)
         {
             legal = TRUE;
         }
     }
       
-    if (a== OBTAIN_PUBLICATION)
+    if (a.actionCode == OBTAIN_PUBLICATION)
     {
         legal = TRUE;
     }
    
-    if (a== OBTAIN_IP_PATENT)
+    if (a.actionCode == OBTAIN_IP_PATENT)
     {
         legal = TRUE;
     }
             
-    if (a== RETRAIN_STUDENTS){
-        if (player.numBPS >= 3 || player.numBQN >= 3 || player.numMJ >= 3 
-                || player.numMTV >= 3 || player.numMMONEY >= 3){
+    if (a.actionCode == RETRAIN_STUDENTS){
+        if (p.numBPS >= 3 || p.numBQN >= 3 || p.numMJ >= 3 
+                || p.numMTV >= 3 || p.numMMONEY >= 3){
             legal = TRUE;
         }
     }
@@ -254,51 +217,56 @@ int isLegalAction (Game g, action a){
 // --- get data about a specified player ---
 
 // return the number of KPI points the specified player currently has
-int getKPIpoints (Game g, int player){
-    int points = player.kpi;
+int getKPIpoints (Game g, player p){
+    int points = p.kpi;
 
     return points;
 }
 
 // return the number of ARC grants the specified player currently has
-int getARCs (Game g, int player){
-    int numArcs = player.numArcs;
+int getARCs (Game g, player p){
+    int numArcs = p.numArcs;
 
     return numArcs;
 }
 
 // return the number of GO8 campuses the specified player currently has
-int getGO8s (Game g, int player){
-    int numGo8 = player.Go8;
+int getGO8s (Game g, player p){
+    int numGo8 = p.numGo8;
 
     return numGo8;
 }
 
 // return the number of normal Campuses the specified player currently has
-int getCampuses (Game g, int player){
-    int numCampus = player.numCampuses;
+int getCampuses (Game g, player p){
+    int numCampus = p.numCampuses;
 
     return numCampus;
 }
 
 // return the number of IP Patents the specified player currently has
-int getIPs (Game g, int player){
-    int numPatents = player.numPatents;
+int getIPs (Game g, player p){
+    int numPatents = p.numPatents;
 
     return numPatents;
 }
 
 // return the number of Publications the specified player currently has
-int getPublications (Game g, int player){
-    int numPapers = player.numPapers;
+int getPublications (Game g, player p){
+    int numPapers = p.numPapers;
 
     return numPapers;
 }
 
 // return the number of students of the specified discipline type 
 // the specified player currently has
-int getStudents (Game g, int player, int discipline){
-    
+int getStudents (Game g, player p, int discipline){
+    int numStudents = 0;
+    numStudents += p.numTHD;
+    numStudents += p.numBPS;
+    numStudents += p.numBQN;
+    numStudents += p.numMJ;
+    numStudents += p.numMTV;
 
     return numStudents;
 }
@@ -307,8 +275,12 @@ int getStudents (Game g, int player, int discipline){
 // the specified player would need to retrain in order to get one 
 // student of discipline type disciplineTo.  This will depend 
 // on what retraining centers, if any, they have a campus at.
-int getExchangeRate (Game g, int player, 
-                     int disciplineFrom, int disciplineTo){
+int getExchangeRate (Game g, player p, int disciplineFrom, int disciplineTo){
     
     return 0;
+}
+
+int main(void)
+{
+	return 0;
 }
