@@ -9,8 +9,39 @@ Game newGame (int discipline[], int dice[])
     Game g = malloc(sizeof(struct _game));
     g->dice = 0;
     g->currentTurn = -1;
-
-
+    // Set up the students
+    g->A->studentBPS = 3;
+    g->B->studentBPS = 3;
+    g->C->studentBPS = 3;
+    g->A->studentBQN = 3;
+    g->B->studentBQN = 3;
+    g->C->studentBQN = 3;
+    g->A->studentMTV = 1;
+    g->B->studentMTV = 1;
+    g->C->studentMTV = 1;
+    g->A->studentMJ = 1;
+    g->B->studentMJ = 1;
+    g->C->studentMJ = 1;
+    g->A->studentTHD = 0;
+    g->B->studentTHD = 0;
+    g->C->studentTHD = 0;
+    g->A->studentMMONEY = 1;
+    g->B->studentMMONEY = 1;
+    g->C->studentMMONEY =1;
+    // Set up the campuses
+    g->A->campuses[0] = position->x = 0,position->y=0;
+    g->A->campuses[1] = position->x = 2,position->y=20;
+    g->B->campuses[0] = position->x = -10,position->y=6;
+    g->B->campuses[1] = position->x = 22,position->y=14;
+    g->C->campuses[0] = position->x = 20,position->y=4;
+    g->C->campuses[1] = position->x = -8,position->y=16;
+    //set up the board
+    int i = 0;
+    while(i<19){
+	    g->Board->regions[i] = disciplines[i];
+	    g->Board->roll[i] = dice[i];
+	    i++;
+    }
     return g;
 }
 
