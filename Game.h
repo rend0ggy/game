@@ -64,6 +64,8 @@
 #define TRUE 1
 #define FALSE 0
 
+#define DICE_SIZE 6
+
 typedef struct _game * Game;
 
 // your team designs this type not us
@@ -105,42 +107,42 @@ typedef char path[PATH_LIMIT];
 typedef struct _position{
     int x;
     int y;
-}position;
+} position;
 
 typedef struct _player{
-    int numPlayer;
-    campuses pos[150];
-    arcGrants pos[150];
+    int numPlayer;      //player number
+    campuses pos[150];  //where their campuses are
+    arcGrants pos[150]; //where their arc grants are
     int kpi;
     int numArcs;
     int numCampuses;
     int numGo8;
     int numPatents;
     int numPapers;
-    int numTHD; //student
-    int numBPS; // student
-    int numBQN; // student
-    int numMJ; // student
-    int numMTV; // student
-    int numMMONEY;
+    int numTHD;         //student
+    int numBPS;         //student
+    int numBQN;         //student
+    int numMJ;          //student
+    int numMTV;         //student
+    int numMMONEY;      //student
     action a;
-}player;
+} player;
 
 typedef struct _board{
-    int regions[19];     //(purple, yellow yellow;
-    int roll[19];        //(6 10 8;
-}board;
+    int regions[19];     //what colour each region are/what students produced
+    int roll[19];        //what diceroll gets you student on that hexagon
+} board;
 
 struct _game{
-    board Board;
-    int numTurn;
-    int currentTurn;
-    player players[NUM_UNIS];
-    int uni_num;
-    int dice;
-    player A;
-    player B;
-    player C;
+    board Board;        //creates and stores game board
+    int numTurn;        //total number of turns
+    int currentTurn;    //which player's turn it is
+    player A;           //player data
+    player B;           //player data
+    player C;           //player data
+    int uni_num;        //???
+    int dice;           //dice number rolled this turn
+    player players[NUM_UNIS]; //???
 };
 
 typedef struct _action {
@@ -151,6 +153,7 @@ typedef struct _action {
    int disciplineFrom;  // used for the retrain students action
    int disciplineTo;    // used for the retrain students action
 } action;
+
 
 /* **** Functions which change the game aka SETTERS **** */
 // make a new game, given the disciplines produced by each
