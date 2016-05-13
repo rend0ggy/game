@@ -1,15 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+
 #include "Game.h"
+
+static void initialiseStudents (Game g);
+static void initialiseCampuses (Game g);
+static int diceThrow (Game g);
+static int spinoffChance (Game g);
 
 // create a new game and return to the main game loop
 // The game structure stores all global information about the game
-Game newGame (int discipline[], int dice[])
-{
+Game newGame (int discipline[], int dice[]){
     Game g = malloc(sizeof(struct _game));
     g->dice = 0;
     g->currentTurn = -1;
     // Set up the students
+    initialiseStudents (game);
+
+    // Set up the campuses
+    initialiseCampuses(game);
+
+    // Set up the board
+    int i = 0;
+    while(i < 19){
+	    g->Board->regions[i] = disciplines[i];
+	    g->Board->roll[i] = dice[i];
+	    i++;
+    }
+    return g;
+}
+
+static void initialiseStudents (Game g){
     g->A->studentBPS = 3;
     g->B->studentBPS = 3;
     g->C->studentBPS = 3;
@@ -28,21 +50,15 @@ Game newGame (int discipline[], int dice[])
     g->A->studentMMONEY = 1;
     g->B->studentMMONEY = 1;
     g->C->studentMMONEY =1;
-    // Set up the campuses
+}
+
+static void initialiseCampuses (Game g){
     g->A->campuses[0] = position->x = 0,position->y=0;
     g->A->campuses[1] = position->x = 2,position->y=20;
     g->B->campuses[0] = position->x = -10,position->y=6;
     g->B->campuses[1] = position->x = 22,position->y=14;
     g->C->campuses[0] = position->x = 20,position->y=4;
-    g->C->campuses[1] = position->x = -8,position->y=16;
-    //set up the board
-    int i = 0;
-    while(i<19){
-	    g->Board->regions[i] = disciplines[i];
-	    g->Board->roll[i] = dice[i];
-	    i++;
-    }
-    return g;
+    g->C->campuses[1] = position->x = -8,position->y=16;    
 }
 
 // free all the memory malloced for the game
@@ -55,21 +71,23 @@ void disposeGame (Game g){
 // The function first tests whether the requested actoin is legal
 // If the action is legal it then changes global game variables through each function
 void makeAction (Game g, action a){
-    if(isLegalAction(g,a) == TRUE){
+    int currentPlayer = getWhoseTurn(g);
+    if (isLegalAction(g, a) == TRUE){
         if (a.actionCode == PASS){
             g->numTurn++;
         } else if (a.actionCode ==  BUILD_CAMPUS){
-            //addCampus(Game g,player p);
+            //buildCampus(Game g,player p);
         } else if (a.actionCode == BUILD_GO8){
-        	//addGO8(Game g,player p);
-        } else if (a.actionCode== OBTAIN_ARC){
-        	//obtainARC(Game g, player p);
+        	//buildGO8(Game g,player p);
+        } else if (a.actionCode == OBTAIN_ARC){
+        	//buildARC(Game g, player p);
         } else if (a.actionCode == START_SPINOFF){
-        	//startSpinoff(Game g, player p);
-        } else if (a.actionCode == OBTAIN_PUBLICATION){
-        	//obtainPublication(Game g, player p);
-        } else if (a.actionCode == OBTAIN_IP_PATENT){
-        	//obtainIP(Game g, player p)
+            chance = spinoffChance(g);
+            if (chance == 1){
+                buildIP(g, currentPlayer);
+            } else {
+                buildPublication(g, currentPlayer);
+            }
         } else if (a.actionCode == RETRAIN_STUDENTS){
         	//retrainStudents(Game g,player p);
         }
@@ -84,8 +102,27 @@ void throwDice (Game g, int diceScore){
     if (diceScore > 0){
         g->numTurn ++;
     }
-// in main function declare numTurn starts at -1
 
+static int diceThrow (Game g){
+    int i = 0;
+    time_t t;
+    g->dice = 0;
+    
+    srand((unsigned) time(&t));
+    g->dice = (1 + rand() % DICE_SIZE) + (1 + rand() & DICE_SIZE);
+    
+    return dice
+}
+
+static int spinoffChance (Game g){
+    int i = 0;
+    time_t t;
+    int chance = 0;
+    
+    srand((unsigned) time(&t));
+    chance = (1 + rand() % 3);
+    
+    return chance;
 }
 
 // what type of students are produced by the specified region?
@@ -119,11 +156,24 @@ int getMostARCs (Game g){
 
 // which university currently has the prestige award for the most pubs?
 // this is NO_ONE until the first publication is made.
-int getMostPublications (Game g)
-{
-	int playerNumber = NO_ONE;
-	if()
-	return playerNumber;
+int getMostPublications (Game g){
+	int mostPub = NO_ONE;
+	int A = getPublications(g, UNI_A);
+	int B = getPublications(g, UNI_B);
+	int C = getPublications(g, UNI_C);
+	
+	if (A > B && A > C){
+	    mostPub = UNI_A;
+	} else if (B > A && B > C){
+	    mostPub = UNI_B;
+	} else if (C > A && C > B){
+	    mostPub = UNI_C;
+	}
+	// if players have same amnt of publications
+	// player who reached that amnt first
+	// keeps kpi points
+
+	return mostPub;
 }
 // return the current turn number of the game -1,0,1, ..
 int getTurnNumber (Game g){
@@ -135,8 +185,7 @@ int getTurnNumber (Game g){
 // the result of this function is NO_ONE during Terra Nullis
 int getWhoseTurn (Game g){
     int currentPlayer;
-    if (g->currentTurn == -1)
-    {
+    if (g->currentTurn == -1) {
         currentPlayer = NO_ONE;
     } else {
         currentPlayer = (((g->currentTurn) % NUM_UNIS) + 1);
@@ -151,7 +200,7 @@ int getCampus(Game g, path pathToVertex){
     return 0;
 }
 
-int regionAssociatedWithPOS[3](position p,int dice)
+static int regionAssociatedWithPOS[3](position p,int dice)
 {
 	// This function returns EVERY dice roll that would lead to a new student 
 	// for a given campus (i.e. the number on the sorounding hexagons)
@@ -190,9 +239,10 @@ int getARC(Game g, path pathToEdge){
 // you can assume that any pths passed in are NULL terminated strings.
 int isLegalAction (Game g, action a){
     int legal = 0;
-    
+    int player = g->currentTurn;
+
     if (a.actionCode == BUILD_CAMPUS){
-        if (a.p.numBPS >= 1 && a.p.numBQN >= 1 && a.p.numMJ >= 1 && a.p.numMTV >= 1){
+        if (g.player.numBPS >= 1 && g.player.numBQN >= 1 && g.player.numMJ >= 1 && g.player.numMTV >= 1){
             legal = TRUE;
         }
     }
@@ -284,11 +334,20 @@ int getPublications (Game g, player p){
 // the specified player currently has
 int getStudents (Game g, player p, int discipline){
     int numStudents = 0;
-    numStudents += p.numTHD;
-    numStudents += p.numBPS;
-    numStudents += p.numBQN;
-    numStudents += p.numMJ;
-    numStudents += p.numMTV;
+    
+    if(discipline == STUDENT_THD){
+        numStudents += p.numTHD;
+    } else if (discipline == STUDENT_BPS){
+        numStudents += p.numBPS;
+    } else if (discipline == STUDENT_BQN){
+        numStudents += p.numBQN;    
+    } else if (discipline == STUDENT_MJ){
+        numStudents += p.numMJ;    
+    } else if (discipline == STUDENT_MTV){
+        numStudents += p.numMTV;    
+    } else if (discipline == STUDENT_MMONEY){
+        numStudent += p.numMMONEY;
+    }
 
     return numStudents;
 }
@@ -298,8 +357,17 @@ int getStudents (Game g, player p, int discipline){
 // student of discipline type disciplineTo.  This will depend 
 // on what retraining centers, if any, they have a campus at.
 int getExchangeRate (Game g, player p, int disciplineFrom, int disciplineTo){
+    int exRate = 0;
+    if (getTurnNumber(g) == -1){
+        exRate = 3;
+    } else if (getTurnNumber(g) >= 0){
+        //find out how many retrainin centres each player has
+        //find what retraining centre reduces
+        //discipline--
+        
+    }
     
-    return 0;
+    return exRate;
 }
 
 int main(void)
