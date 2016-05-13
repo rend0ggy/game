@@ -109,25 +109,26 @@ typedef struct _position{
 
 typedef struct _player{
     int numPlayer;
-        campuses pos[150];
-        arcGrants pos[150];
-        int kpi;
-        int numArcs;
-        int numCampuses;
-        int numGo8;
-        int numPatents;
-        int numPapers;
-        int numTHD; //student
-        int numBPS; // student
-        int numBQN; // student
-        int numMJ; // student
-        int numMTV; // student
-        int numMMONEY;
+    campuses pos[150];
+    arcGrants pos[150];
+    int kpi;
+    int numArcs;
+    int numCampuses;
+    int numGo8;
+    int numPatents;
+    int numPapers;
+    int numTHD; //student
+    int numBPS; // student
+    int numBQN; // student
+    int numMJ; // student
+    int numMTV; // student
+    int numMMONEY;
+    action a;
 }player;
 
 typedef struct _board{
-        int regions[19];     //(purple, yellow yellow;
-        int roll[19];        //(6 10 8;
+    int regions[19];     //(purple, yellow yellow;
+    int roll[19];        //(6 10 8;
 }board;
 
 struct _game{
@@ -149,7 +150,6 @@ typedef struct _action {
                      // otherwise
    int disciplineFrom;  // used for the retrain students action
    int disciplineTo;    // used for the retrain students action
-   player p;
 } action;
 
 /* **** Functions which change the game aka SETTERS **** */
