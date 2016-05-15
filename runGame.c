@@ -8,6 +8,7 @@ int main (int argc, char * argv[]){
     int gameAlive = TRUE;
     while(gameAlive == TRUE){
         int diceValue = diceThrow(game); //diceThrow is in Game.c
+        int diceValue += diceThrow(game);
         rollDice (game, diceValue);
         
         int whoseTurn = getWhoseTurn(game);
