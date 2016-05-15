@@ -1,18 +1,29 @@
-#include "Game.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
+#include "Game.h"
+static int diceThrow (Game g);
 
 int main (int argc, char * argv[]){
-    Game game = newGame();
+
+    int discipline[19] = DEFAULT_DISCIPLINES;
+    int dice[19] = DEFAULT_DICE;
+    Game g = newGame(discipline, dice);
     int gameAlive = TRUE;
+    int turnOver = FALSE;
+    action move;
+
     while(gameAlive == TRUE){
-        int diceValue = diceThrow(game); //diceThrow is in Game.c
-        int diceValue += diceThrow(game);
-        rollDice (game, diceValue);
+        int diceValue = 0;
+        diceValue = diceThrow(g);
+        diceValue += diceThrow(g);
+        throwDice (g, diceValue);
         
-        int whoseTurn = getWhoseTurn(game);
+        int whoseTurn = getWhoseTurn(g);
         printf("It is player %d's turn\n", whoseTurn);
+        turnOver = FALSE;
         
         // player chooses action
         // while loop:
@@ -21,14 +32,24 @@ int main (int argc, char * argv[]){
         // change game state
         // 
         // following while loop not working yet --> fixing Game.c (finishing/fixing functions)
-        while (playerturn notover){
-            int action = 0;
-            printf("Choose an action:\n");
-            scanf("%d", &action);
-            player->a.actionCode = action;
-            makeAction(game, action);
+        while (turnOver != TRUE){
+            move.actionCode = PASS;
+            if (move.actionCode == PASS){
+                turnOver = TRUE;
+            }
         }
     }
     
     return EXIT_SUCCESS;
+}
+
+
+static int diceThrow (Game g){
+    time_t t;
+    int dice = 0;
+    
+    srand((unsigned) time(&t));
+    dice = (1 + rand() % DICE_SIZE);
+    
+    return dice;
 }
