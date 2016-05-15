@@ -10,36 +10,42 @@ Game newGame (int discipline[], int dice[])
     g->dice = 0;
     g->currentTurn = -1;
     // Set up the students
-    g->A->studentBPS = 3;
-    g->B->studentBPS = 3;
-    g->C->studentBPS = 3;
-    g->A->studentBQN = 3;
-    g->B->studentBQN = 3;
-    g->C->studentBQN = 3;
-    g->A->studentMTV = 1;
-    g->B->studentMTV = 1;
-    g->C->studentMTV = 1;
-    g->A->studentMJ = 1;
-    g->B->studentMJ = 1;
-    g->C->studentMJ = 1;
-    g->A->studentTHD = 0;
-    g->B->studentTHD = 0;
-    g->C->studentTHD = 0;
-    g->A->studentMMONEY = 1;
-    g->B->studentMMONEY = 1;
-    g->C->studentMMONEY =1;
+    g->A.numBPS = 3;
+    g->B.numBPS = 3;
+    g->C.numBPS = 3;
+    g->A.numBQN = 3;
+    g->B.numBQN = 3;
+    g->C.numBQN = 3;
+    g->A.numMTV = 1;
+    g->B.numMTV = 1;
+    g->C.numMTV = 1;
+    g->A.numMJ = 1;
+    g->B.numMJ = 1;
+    g->C.numMJ = 1;
+    g->A.numTHD = 0;
+    g->B.numTHD = 0;
+    g->C.numTHD = 0;
+    g->A.numMMONEY = 1;
+    g->B.numMMONEY = 1;
+    g->C.numMMONEY =1;
     // Set up the campuses
-    g->A->campuses[0] = position->x = 0,position->y=0;
-    g->A->campuses[1] = position->x = 2,position->y=20;
-    g->B->campuses[0] = position->x = -10,position->y=6;
-    g->B->campuses[1] = position->x = 22,position->y=14;
-    g->C->campuses[0] = position->x = 20,position->y=4;
-    g->C->campuses[1] = position->x = -8,position->y=16;
+    g->A.campus[0].x = 0;
+    g->A.campus[0].y = 0;  
+    g->A.campus[1].x = 2;
+    g->A.campus[1].y = 20;
+    g->B.campus[0].x = -10;
+    g->B.campus[0].y = 6;  
+    g->B.campus[1].x = 22;
+    g->B.campus[1].y = 14;
+    g->C.campus[0].x = 20;
+    g->C.campus[0].y = 4;  
+    g->C.campus[1].x = -8;
+    g->C.campus[1].y = 16;
     //set up the board
     int i = 0;
     while(i<19){
-	    g->Board->regions[i] = disciplines[i];
-	    g->Board->roll[i] = dice[i];
+	    g->Board.regions[i] = discipline[i];
+	    g->Board.roll[i] = dice[i];
 	    i++;
     }
     return g;
@@ -122,7 +128,6 @@ int getMostARCs (Game g){
 int getMostPublications (Game g)
 {
 	int playerNumber = NO_ONE;
-	if()
 	return playerNumber;
 }
 // return the current turn number of the game -1,0,1, ..
@@ -151,7 +156,7 @@ int getCampus(Game g, path pathToVertex){
     return 0;
 }
 
-int regionAssociatedWithPOS[3](position p,int dice)
+int* regionAssociatedWithPOS(position p,int dice)
 {
 	// This function returns EVERY dice roll that would lead to a new student 
 	// for a given campus (i.e. the number on the sorounding hexagons)
@@ -198,7 +203,7 @@ int isLegalAction (Game g, action a){
     }
     
     if (a.actionCode == BUILD_GO8){
-        if (p.numMJ >= 2 && a.p.numMMONEY >= 3){
+        if (a.p.numMJ >= 2 && a.p.numMMONEY >= 3){
             legal = TRUE;
        }
     }

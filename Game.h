@@ -111,21 +111,20 @@ typedef struct _position{
 
 typedef struct _player{
     int numPlayer;      //player number
-    campuses pos[150];  //where their campuses are
-    arcGrants pos[150]; //where their arc grants are
+    position campus[150];  //where their campuses are
+    position arc[150]; //where their arc grants are
     int kpi;
     int numArcs;
     int numCampuses;
     int numGo8;
     int numPatents;
     int numPapers;
+    int numBPS;
     int numTHD;         //student
-    int numBPS;         //student
     int numBQN;         //student
     int numMJ;          //student
     int numMTV;         //student
     int numMMONEY;      //student
-    action a;
 } player;
 
 typedef struct _board{
@@ -152,6 +151,7 @@ typedef struct _action {
                      // otherwise
    int disciplineFrom;  // used for the retrain students action
    int disciplineTo;    // used for the retrain students action
+   player p;
 } action;
 
 
