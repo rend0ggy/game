@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+
 #include "Game.h"
 
 // create a new game and return to the main game loop
@@ -205,7 +207,7 @@ int getARC(Game g, path pathToEdge){
 
 
 // Function returns a player from the game based on the player number given as input
-player intToPlayerConversion(Game g,int playerNum)
+player intToPlayerConversion(Game g, int playerNum)
 {
 	player p;
 	if(playerNum == UNI_A)
@@ -275,48 +277,41 @@ int isLegalAction (Game g, action a){
 // --- get data about a specified player ---
 
 // return the number of KPI points the specified player currently has
-int getKPIpoints (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
+int getKPIpoints (Game g, player p){ //please stop changing the given inputs
     int points = p.kpi;
-
     return points;
 }
 
 // return the number of ARC grants the specified player currently has
-int getARCs (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
+int getARCs (Game g, player p){ //please stop changing the given inputs
     int numArcs = p.numArcs;
 
     return numArcs;
 }
 
 // return the number of GO8 campuses the specified player currently has
-int getGO8s (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
+int getGO8s (Game g, player p){ //please stop changing the given inputs
     int numGo8 = p.numGo8;
 
     return numGo8;
 }
 
 // return the number of normal Campuses the specified player currently has
-int getCampuses (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
+int getCampuses (Game g, player p){ //please stop changing the given inputs
     int numCampus = p.numCampuses;
 
     return numCampus;
 }
 
 // return the number of IP Patents the specified player currently has
-int getIPs (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
+int getIPs (Game g, player p){ //please stop changing the given inputs
     int numPatents = p.numPatents;
 
     return numPatents;
 }
 
 // return the number of Publications the specified player currently has
-int getPublications (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
+int getPublications (Game g, player p){ //please stop changing the given inputs
     int numPapers = p.numPapers;
 
     return numPapers;
@@ -324,8 +319,7 @@ int getPublications (Game g, int playerNum){
 
 // return the number of students of the specified discipline type 
 // the specified player currently has
-int getStudents (Game g, int playerNum, int discipline){
-	player p = intToPlayerConversion(g,playerNum);
+int getStudents (Game g, player p, int discipline){ //please stop changing the given inputs
     int numStudents = 0;
     numStudents += p.numTHD;
     numStudents += p.numBPS;
@@ -340,7 +334,7 @@ int getStudents (Game g, int playerNum, int discipline){
 // the specified player would need to retrain in order to get one 
 // student of discipline type disciplineTo.  This will depend 
 // on what retraining centers, if any, they have a campus at.
-int getExchangeRate (Game g, int playerNum, int disciplineFrom, int disciplineTo)
+int getExchangeRate (Game g, player p, int disciplineFrom, int disciplineTo) //please stop changing the given inputs 
 {
     
     return 0;
