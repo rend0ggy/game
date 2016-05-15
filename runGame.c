@@ -1,17 +1,22 @@
-#include "Game.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "Game.h"
 
+//
 int main (int argc, char * argv[]){
-    Game game = newGame();
+    int disciplines[] = DEFAULT_DISCIPLINES;
+    int dice[] = DEFAULT_DICE;
+    Game g = newGame (disciplines, dice);
     int gameAlive = TRUE;
     while(gameAlive == TRUE){
-        int diceValue = diceThrow(game); //diceThrow is in Game.c
-        int diceValue += diceThrow(game);
-        rollDice (game, diceValue);
         
-        int whoseTurn = getWhoseTurn(game);
+        int diceValue = diceThrow();
+        diceValue += diceThrow();
+        printf("%d\n",diceValue);
+        throwDice (g, diceValue);
+        
+        int whoseTurn = getWhoseTurn(g);
         printf("It is player %d's turn\n", whoseTurn);
         
         // player chooses action
@@ -21,12 +26,37 @@ int main (int argc, char * argv[]){
         // change game state
         // 
         // following while loop not working yet --> fixing Game.c (finishing/fixing functions)
-        while (playerturn notover){
-            int action = 0;
+        //action tmpAct;
+        action a;
+        while (TRUE){
+            // initialize variables
+            int i = 0;
+            int actionChoice = 0;
+            path movePath = {'0'};
+            char currentMove;
+            int disciplineFrom;
+            int disciplineTo;
+
             printf("Choose an action:\n");
-            scanf("%d", &action);
-            player->a.actionCode = action;
-            makeAction(game, action);
+            
+            scanf("%d", &actionChoice);
+            while(i<PATH_LIMIT)
+            {
+                scanf("%c",&currentMove);
+                //movePath[i]= currentMove;
+                i++;
+            }
+
+
+            scanf("%d", &disciplineFrom);
+            scanf("%d", &disciplineTo);
+
+            a.actionCode = actionChoice;
+            memcpy(a.destination,movePath,PATH_LIMIT);
+            a.disciplineFrom = disciplineFrom;
+            a.disciplineTo = disciplineTo;
+            
+            makeAction(g, a);
         }
     }
     

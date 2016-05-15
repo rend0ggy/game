@@ -66,43 +66,14 @@
 
 #define DICE_SIZE 6
 
+#define DEFAULT_DISCIPLINES {STUDENT_BQN, STUDENT_MMONEY, STUDENT_MJ, \
+                STUDENT_MMONEY, STUDENT_MJ, STUDENT_BPS, STUDENT_MTV, \
+                STUDENT_MTV, STUDENT_BPS,STUDENT_MTV, STUDENT_BQN, \
+                STUDENT_MJ, STUDENT_BQN, STUDENT_THD, STUDENT_MJ, \
+                STUDENT_MMONEY, STUDENT_MTV, STUDENT_BQN, STUDENT_BPS}
+#define DEFAULT_DICE {9,10,8,12,6,5,3,11,3,11,4,6,4,7,9,2,8,10,5}
+
 typedef struct _game * Game;
-
-// your team designs this type not us
-// store in this struct all the things you might want to know about
-// the game so you can write the interface functions in this header
-// eg you might want to store the current turn number (so i've put
-// it in for you as an example but take it out if you don't want it)
-
-// in your Game.c include the details of the data
-// you want to store in the _game struct eg
-
-// typedef struct _game { 
-//   int currentTurn;
-//   ... more stuff in here
-// } game;
-
-// a path is a sequence of L=left R=right B=back steps
-// starting from the initial campus of player 1 / A at the top 
-// of the map facing inwards represented as a string of length 
-// PATH_LIMIT or less (including the terminating 0).  
-// a path can specify a vertex (the vertex at the end of the path)
-// and a path can specify an ARC (the last ARC in the path)
-// it is fine and legal for a path to not be the shortest path
-// to the destination, it can even contain loops if you like.
-// The length of a path (including the terminating 0) must never 
-// exceed PATH_LIMIT.  Every edge in the path must lie on the 
-// island, paths cannot include edges which are in the sea.
-typedef char path[PATH_LIMIT];
-
-// actions are what the player AI returns.  They say the one thing
-// the AI wants to do next.  In the playGame logic you'll ask
-// a player for their next action, then you'll check it is a legal
-// action (using isLegalAction()), then you'll perform that action
-// for them (using makeAction()), then you'll ask the same player
-// for another action and repeat this over and over again until they 
-// return PASS at which time you'll throw the dice (using 
-// throwDice()) and advance the game to the next player.  And repeat.
 
 typedef struct _position{
     int x;
@@ -144,6 +115,62 @@ struct _game{
     player players[NUM_UNIS]; //???
 };
 
+// your team designs this type not us
+// store in this struct all the things you might want to know about
+// the game so you can write the interface functions in this header
+// eg you might want to store the current turn number (so i've put
+// it in for you as an example but take it out if you don't want it)
+
+// in your Game.c include the details of the data
+// you want to store in the _game struct eg
+
+// typedef struct _game { 
+//   int currentTurn;
+//   ... more stuff in here
+// } game;
+
+// a path is a sequence of L=left R=right B=back steps
+// starting from the initial campus of player 1 / A at the top 
+// of the map facing inwards represented as a string of length 
+// PATH_LIMIT or less (including the terminating 0).  
+// a path can specify a vertex (the vertex at the end of the path)
+// and a path can specify an ARC (the last ARC in the path)
+// it is fine and legal for a path to not be the shortest path
+// to the destination, it can even contain loops if you like.
+// The length of a path (including the terminating 0) must never 
+// exceed PATH_LIMIT.  Every edge in the path must lie on the 
+// island, paths cannot include edges which are in the sea.
+
+// actions are what the player AI returns.  They say the one thing
+// the AI wants to do next.  In the playGame logic you'll ask
+// a player for their next action, then you'll check it is a legal
+// action (using isLegalAction()), then you'll perform that action
+// for them (using makeAction()), then you'll ask the same player
+// for another action and repeat this over and over again until they 
+// return PASS at which time you'll throw the dice (using 
+// throwDice()) and advance the game to the next player.  And repeat.
+
+// a path is a sequence of L=left R=right B=back steps
+// starting from the initial campus of player 1 / A at the top 
+// of the map facing inwards represented as a string of length 
+// PATH_LIMIT or less (including the terminating 0).  
+// a path can specify a vertex (the vertex at the end of the path)
+// and a path can specify an ARC (the last ARC in the path)
+// it is fine and legal for a path to not be the shortest path
+// to the destination, it can even contain loops if you like.
+// The length of a path (including the terminating 0) must never 
+// exceed PATH_LIMIT.  Every edge in the path must lie on the 
+// island, paths cannot include edges which are in the sea.
+typedef char path[PATH_LIMIT];
+
+// actions are what the player AI returns.  They say the one thing
+// the AI wants to do next.  In the playGame logic you'll ask
+// a player for their next action, then you'll check it is a legal
+// action (using isLegalAction()), then you'll perform that action
+// for them (using makeAction()), then you'll ask the same player
+// for another action and repeat this over and over again until they 
+// return PASS at which time you'll throw the dice (using 
+// throwDice()) and advance the game to the next player.  And repeat.
 typedef struct _action {
    int actionCode;  // see #defines above
    path destination; // if the action operates on a vertex or ARC this
@@ -151,9 +178,7 @@ typedef struct _action {
                      // otherwise
    int disciplineFrom;  // used for the retrain students action
    int disciplineTo;    // used for the retrain students action
-   player p;
 } action;
-
 
 /* **** Functions which change the game aka SETTERS **** */
 // make a new game, given the disciplines produced by each
@@ -169,17 +194,6 @@ typedef struct _action {
 // so to create the default game as shown on the badly drawn map:
 //
 
-#define DEFAULT_DISCIPLINES {STUDENT_BQN, STUDENT_MMONEY, STUDENT_MJ, \
-                STUDENT_MMONEY, STUDENT_MJ, STUDENT_BPS, STUDENT_MTV, \
-                STUDENT_MTV, STUDENT_BPS,STUDENT_MTV, STUDENT_BQN, \
-                STUDENT_MJ, STUDENT_BQN, STUDENT_THD, STUDENT_MJ, \
-                STUDENT_MMONEY, STUDENT_MTV, STUDENT_BQN, STUDENT_BPS}
-#define DEFAULT_DICE {9,10,8,12,6,5,3,11,3,11,4,6,4,7,9,2,8,10,5}
-
-//
-//   int disciplines[] = DEFAULT_DISCIPLINES;
-//   int dice[] = DEFAULT_DICE;
-//   Game g = newGame (disciplines, dice);
 Game newGame (int discipline[], int dice[]);
 
 // free all the memory malloced for the game
@@ -261,31 +275,30 @@ int isLegalAction (Game g, action a);
 // --- get data about a specified player ---
 
 // return the number of KPI points the specified player currently has
-int getKPIpoints (Game g, player p);
+int getKPIpoints (Game g, int player);
 
 // return the number of ARC grants the specified player currently has
-int getARCs (Game g, player p);
+int getARCs (Game g, int player);
 
 // return the number of GO8 campuses the specified player currently has
-int getGO8s (Game g, player p);
+int getGO8s (Game g, int player);
 
 // return the number of normal Campuses the specified player currently has
-int getCampuses (Game g, player p);
+int getCampuses (Game g, int player);
 
 // return the number of IP Patents the specified player currently has
-int getIPs (Game g, player p);
+int getIPs (Game g, int player);
 
 // return the number of Publications the specified player currently has
-int getPublications (Game g, player p);
+int getPublications (Game g, int player);
 
 // return the number of students of the specified discipline type 
 // the specified player currently has
-int getStudents (Game g, player p, int discipline);
+int getStudents (Game g, int player, int discipline);
 
 // return how many students of discipline type disciplineFrom
 // the specified player would need to retrain in order to get one 
 // student of discipline type disciplineTo.  This will depend 
 // on what retraining centers, if any, they have a campus at.
-int getExchangeRate (Game g, player p, 
+int getExchangeRate (Game g, int player, 
                      int disciplineFrom, int disciplineTo);
-
