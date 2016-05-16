@@ -4,6 +4,8 @@
 
 #include "Game.h"
 
+static int spinoffChance();
+
 // create a new game and return to the main game loop
 // The game structure stores all global information about the game
 Game newGame (int discipline[], int dice[])
@@ -32,21 +34,18 @@ Game newGame (int discipline[], int dice[])
     g->B.numMMONEY = 1;
     g->C.numMMONEY =1;
     // Set up the campuses
-    g->A.campus[0].x = 0;
-    g->A.campus[0].y = 0;  
-    g->A.campus[1].x = 2;
-    g->A.campus[1].y = 20;
-    g->B.campus[0].x = -10;
-    g->B.campus[0].y = 6;  
-    g->B.campus[1].x = 22;
-    g->B.campus[1].y = 14;
-    g->C.campus[0].x = 20;
-    g->C.campus[0].y = 4;  
-    g->C.campus[1].x = -8;
-    g->C.campus[1].y = 16;
+    position po;
+
+    g->A.campuses_pos[0] = po.mapref[0][0];
+    g->A.campuses_pos[1] = po.mapref[2][20];
+    g->B.campuses_pos[0] = po.mapref[-10][6];
+    g->B.campuses_pos[1] = po.mapref[22][14];
+    g->C.campuses_pos[0] = po.mapref[20][0];
+    g->C.campuses_pos[1] = po.mapref[-8][16];
+
     //set up the board
     int i = 0;
-    while(i<19){
+    while(i < 19){
 	    g->Board.regions[i] = discipline[i];
 	    g->Board.roll[i] = dice[i];
 	    i++;
@@ -64,23 +63,25 @@ void disposeGame (Game g){
 // The function first tests whether the requested actoin is legal
 // If the action is legal it then changes global game variables through each function
 void makeAction (Game g, action a){
-    if(isLegalAction(g,a) == TRUE){
+    //int currentPlayer = getWhoseTurn(g);
+    if (isLegalAction(g, a) == TRUE){
         if (a.actionCode == PASS){
             g->numTurn++;
         } else if (a.actionCode ==  BUILD_CAMPUS){
-            //addCampus(Game g,player p);
+            //buildCampus(Game g,player p);
         } else if (a.actionCode == BUILD_GO8){
-        	//addGO8(Game g,player p);
-        } else if (a.actionCode== OBTAIN_ARC){
-        	//obtainARC(Game g, player p);
+            //buildGO8(Game g,player p);
+        } else if (a.actionCode == OBTAIN_ARC){
+            //buildARC(Game g, player p);
         } else if (a.actionCode == START_SPINOFF){
-        	//startSpinoff(Game g, player p);
-        } else if (a.actionCode == OBTAIN_PUBLICATION){
-        	//obtainPublication(Game g, player p);
-        } else if (a.actionCode == OBTAIN_IP_PATENT){
-        	//obtainIP(Game g, player p)
+            int chance = spinoffChance();
+            if (chance == 1){
+               // buildIP(g, currentPlayer);
+            } else {
+               // buildPublication(g, currentPlayer);
+            }
         } else if (a.actionCode == RETRAIN_STUDENTS){
-        	//retrainStudents(Game g,player p);
+            //retrainStudents(Game g,player p);
         }
     }
 }
@@ -97,11 +98,14 @@ void throwDice (Game g, int diceScore){
 
 }
 
-int diceThrow()
-{
-	int timeNow = (int)time(NULL);
-    unsigned int randomDiceNumer = (unsigned)rand()*(timeNow*timeNow) % 6 + 1;
-    return randomDiceNumer;
+static int spinoffChance (){
+    time_t t;
+    int chance = 0;
+    
+    srand((unsigned) time(&t));
+    chance = (1 + rand() % 3);
+    
+    return chance;
 }
 
 // what type of students are produced by the specified region?
@@ -150,8 +154,7 @@ int getTurnNumber (Game g){
 // the result of this function is NO_ONE during Terra Nullis
 int getWhoseTurn (Game g){
     int currentPlayer;
-    if (g->currentTurn == -1)
-    {
+    if (g->currentTurn == -1){
         currentPlayer = NO_ONE;
     } else {
         currentPlayer = (((g->currentTurn) % NUM_UNIS) + 1);
@@ -207,19 +210,17 @@ int getARC(Game g, path pathToEdge){
 
 
 // Function returns a player from the game based on the player number given as input
-player intToPlayerConversion(Game g, int playerNum)
-{
+player intToPlayerConversion(Game g, int playerNum){
 	player p;
-	if(playerNum == UNI_A)
-	{
+	if(playerNum == UNI_A) {
 		p = g->A;
 	}
-	if(playerNum == UNI_B)
-	{
+
+	if(playerNum == UNI_B) {
 		p = g->B;
 	}
-	if(playerNum == UNI_C)
-	{
+
+	if(playerNum == UNI_C) {
 		p = g->C;
 	}
 	return p;
@@ -277,41 +278,41 @@ int isLegalAction (Game g, action a){
 // --- get data about a specified player ---
 
 // return the number of KPI points the specified player currently has
-int getKPIpoints (Game g, player p){ //please stop changing the given inputs
+int getKPIpoints (Game g, player p){
     int points = p.kpi;
     return points;
 }
 
 // return the number of ARC grants the specified player currently has
-int getARCs (Game g, player p){ //please stop changing the given inputs
+int getARCs (Game g, player p){
     int numArcs = p.numArcs;
 
     return numArcs;
 }
 
 // return the number of GO8 campuses the specified player currently has
-int getGO8s (Game g, player p){ //please stop changing the given inputs
+int getGO8s (Game g, player p){
     int numGo8 = p.numGo8;
 
     return numGo8;
 }
 
 // return the number of normal Campuses the specified player currently has
-int getCampuses (Game g, player p){ //please stop changing the given inputs
+int getCampuses (Game g, player p){
     int numCampus = p.numCampuses;
 
     return numCampus;
 }
 
 // return the number of IP Patents the specified player currently has
-int getIPs (Game g, player p){ //please stop changing the given inputs
+int getIPs (Game g, player p){
     int numPatents = p.numPatents;
 
     return numPatents;
 }
 
 // return the number of Publications the specified player currently has
-int getPublications (Game g, player p){ //please stop changing the given inputs
+int getPublications (Game g, player p){
     int numPapers = p.numPapers;
 
     return numPapers;
@@ -319,7 +320,7 @@ int getPublications (Game g, player p){ //please stop changing the given inputs
 
 // return the number of students of the specified discipline type 
 // the specified player currently has
-int getStudents (Game g, player p, int discipline){ //please stop changing the given inputs
+int getStudents (Game g, player p, int discipline){
     int numStudents = 0;
     numStudents += p.numTHD;
     numStudents += p.numBPS;
@@ -334,13 +335,13 @@ int getStudents (Game g, player p, int discipline){ //please stop changing the g
 // the specified player would need to retrain in order to get one 
 // student of discipline type disciplineTo.  This will depend 
 // on what retraining centers, if any, they have a campus at.
-int getExchangeRate (Game g, player p, int disciplineFrom, int disciplineTo) //please stop changing the given inputs 
+int getExchangeRate (Game g, player p, int disciplineFrom, int disciplineTo)
 {
     
     return 0;
-}/*
+}
 
 int main(void)
 {
 	return 0;
-}*/
+}
