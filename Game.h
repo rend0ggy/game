@@ -75,60 +75,6 @@
 
 typedef struct _game * Game;
 
-typedef struct _position{
-    int x;
-    int y;
-} position;
-
-typedef struct _player{
-    int numPlayer;      //player number
-    position campus[150];  //where their campuses are
-    position arc[150]; //where their arc grants are
-    int kpi;
-    int numArcs;
-    int numCampuses;
-    int numGo8;
-    int numPatents;
-    int numPapers;
-    int numBPS;
-    int numTHD;         //student
-    int numBQN;         //student
-    int numMJ;          //student
-    int numMTV;         //student
-    int numMMONEY;      //student
-} player;
-
-typedef struct _board{
-    int regions[19];     //what colour each region are/what students produced
-    int roll[19];        //what diceroll gets you student on that hexagon
-} board;
-
-struct _game{
-    board Board;        //creates and stores game board
-    int numTurn;        //total number of turns
-    int currentTurn;    //which player's turn it is
-    player A;           //player data
-    player B;           //player data
-    player C;           //player data
-    int uni_num;        //???
-    int dice;           //dice number rolled this turn
-    player players[NUM_UNIS]; //???
-};
-
-// your team designs this type not us
-// store in this struct all the things you might want to know about
-// the game so you can write the interface functions in this header
-// eg you might want to store the current turn number (so i've put
-// it in for you as an example but take it out if you don't want it)
-
-// in your Game.c include the details of the data
-// you want to store in the _game struct eg
-
-// typedef struct _game { 
-//   int currentTurn;
-//   ... more stuff in here
-// } game;
-
 // a path is a sequence of L=left R=right B=back steps
 // starting from the initial campus of player 1 / A at the top 
 // of the map facing inwards represented as a string of length 
@@ -141,36 +87,9 @@ struct _game{
 // exceed PATH_LIMIT.  Every edge in the path must lie on the 
 // island, paths cannot include edges which are in the sea.
 
-// actions are what the player AI returns.  They say the one thing
-// the AI wants to do next.  In the playGame logic you'll ask
-// a player for their next action, then you'll check it is a legal
-// action (using isLegalAction()), then you'll perform that action
-// for them (using makeAction()), then you'll ask the same player
-// for another action and repeat this over and over again until they 
-// return PASS at which time you'll throw the dice (using 
-// throwDice()) and advance the game to the next player.  And repeat.
-
-// a path is a sequence of L=left R=right B=back steps
-// starting from the initial campus of player 1 / A at the top 
-// of the map facing inwards represented as a string of length 
-// PATH_LIMIT or less (including the terminating 0).  
-// a path can specify a vertex (the vertex at the end of the path)
-// and a path can specify an ARC (the last ARC in the path)
-// it is fine and legal for a path to not be the shortest path
-// to the destination, it can even contain loops if you like.
-// The length of a path (including the terminating 0) must never 
-// exceed PATH_LIMIT.  Every edge in the path must lie on the 
-// island, paths cannot include edges which are in the sea.
 typedef char path[PATH_LIMIT];
 
-// actions are what the player AI returns.  They say the one thing
-// the AI wants to do next.  In the playGame logic you'll ask
-// a player for their next action, then you'll check it is a legal
-// action (using isLegalAction()), then you'll perform that action
-// for them (using makeAction()), then you'll ask the same player
-// for another action and repeat this over and over again until they 
-// return PASS at which time you'll throw the dice (using 
-// throwDice()) and advance the game to the next player.  And repeat.
+
 typedef struct _action {
    int actionCode;  // see #defines above
    path destination; // if the action operates on a vertex or ARC this
@@ -179,6 +98,7 @@ typedef struct _action {
    int disciplineFrom;  // used for the retrain students action
    int disciplineTo;    // used for the retrain students action
 } action;
+
 
 /* **** Functions which change the game aka SETTERS **** */
 // make a new game, given the disciplines produced by each

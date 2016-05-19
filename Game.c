@@ -2,12 +2,55 @@
 #include <stdlib.h>
 #include "Game.h"
 
+
+typedef struct _player{
+    int numPlayer;      //player number
+    path campus[150];  //where their campuses are
+    path g08[150]; //where their arc grants are
+    path arc[150]; //where their arc grants are
+    int kpi;
+    int numArcs;
+    int numCampuses;
+    int numGo8;
+    int numPatents;
+    int numPapers;
+    int numBPS;
+    int numTHD;         //student
+    int numBQN;         //student
+    int numMJ;          //student
+    int numMTV;         //student
+    int numMMONEY;      //student
+} player;
+
+typedef struct _board{
+    int regions[19];     //what colour each region are/what students produced
+    int roll[19];        //what diceroll gets you student on that hexagon
+} board;
+
+struct _game{
+    board Board;        //creates and stores game board
+    int numTurn;        //total number of turns
+    int currentTurn;    //which player's turn it is
+    player A;           //player data
+    player B;           //player data
+    player C;           //player data
+    int uni_num;        //???
+    int dice;           //dice number rolled this turn
+    player players[NUM_UNIS]; //???
+};
+
+void addCampus(Game g, int p, path pathToCampus);
+void obtainARC(Game g, int p, path pathToARC);
+player intToPlayerConversion(Game g,int playerNum);
+
+
+
 // create a new game and return to the main game loop
 // The game structure stores all global information about the game
 Game newGame (int discipline[], int dice[])
 {
 	Game tmp;
-    Game g = malloc(sizeof(tmp));
+    Game g = malloc(sizeof(*tmp));
     g->dice = 0;
     g->currentTurn = -1;
     // Set up the students
@@ -30,20 +73,45 @@ Game newGame (int discipline[], int dice[])
     g->B.numMMONEY = 1;
     g->C.numMMONEY =1;
     // Set up the campuses
-    g->A.campus[0].x = 0;
-    g->A.campus[0].y = 0;  
-    g->A.campus[1].x = 2;
-    g->A.campus[1].y = 20;
-    g->B.campus[0].x = -10;
-    g->B.campus[0].y = 6;  
-    g->B.campus[1].x = 22;
-    g->B.campus[1].y = 14;
-    g->C.campus[0].x = 20;
-    g->C.campus[0].y = 4;  
-    g->C.campus[1].x = -8;
-    g->C.campus[1].y = 16;
-    //set up the board
+
+    char campusA1[] = {'0'};
+    char campusA2[] =  {'R','L','R','L','R','L','R','L','R','L','L'};
+
+    char campusB1[] = {'R','R','L','R','L'};
+    char campusB2[] = {'L','R','L','R','L','R','R','L','R','L'};
+    char campusC1[] = {'L','R','L','R','L'};
+    char campusC2[]  = {'R','R','L','R','L','L','R','L','R','L'};
+
     int i = 0;
+    g->A.campus[0][0] = '0';
+    while(i<11)
+    {
+    	g->A.campus[1][i] = campusA1[i];
+    	i++;
+    }
+    while(i<5)
+    {
+    	g->B.campus[0][i] = campusB1[i];
+    	i++;
+    }
+    while(i<10)
+    {
+    	g->B.campus[1][i] = campusB2[i];
+    	i++;
+    }
+    while(i<5)
+    {
+    	g->C.campus[0][i] = campusC1[i];
+    	i++;
+    }
+    while(i<10)
+    {
+    	g->C.campus[1][i] = campusC2[i];
+    	i++;
+    }
+
+    //set up the board
+    i = 0;
     while(i<19){
 	    g->Board.regions[i] = discipline[i];
 	    g->Board.roll[i] = dice[i];
@@ -62,25 +130,79 @@ void disposeGame (Game g){
 // The function first tests whether the requested actoin is legal
 // If the action is legal it then changes global game variables through each function
 void makeAction (Game g, action a){
+    int p = getWhoseTurn(g);
     if(isLegalAction(g,a) == TRUE){
         if (a.actionCode == PASS){
             g->numTurn++;
         } else if (a.actionCode ==  BUILD_CAMPUS){
-            //addCampus(Game g,player p);
+            addCampus(g,p,a.destination);
         } else if (a.actionCode == BUILD_GO8){
-        	//addGO8(Game g,player p);
+        	addGO8(Game g,int p);
         } else if (a.actionCode== OBTAIN_ARC){
-        	//obtainARC(Game g, player p);
+        	obtainARC(g,p,a.destination);
         } else if (a.actionCode == START_SPINOFF){
-        	//startSpinoff(Game g, player p);
+        	//startSpinoff(Game g, int p);
         } else if (a.actionCode == OBTAIN_PUBLICATION){
-        	//obtainPublication(Game g, player p);
+        	//obtainPublication(Game g, int p);
         } else if (a.actionCode == OBTAIN_IP_PATENT){
-        	//obtainIP(Game g, player p)
+        	//obtainIP(Game g, int p)
         } else if (a.actionCode == RETRAIN_STUDENTS){
         	//retrainStudents(Game g,player p);
         }
     }
+}
+
+void addCampus(Game g, int p, path pathToCampus)
+{
+	player pla = intToPlayerConversion(g,p);
+	pla.numBQN += -1;
+	pla.numBPS += -1;
+	pla.numMJ += -1;
+	pla.numMTV += -1;
+	pla.numCampuses += 1;
+	pla.kpi += 10;
+	int i = 0;
+
+	while(pathToCampus[i] != '\0')
+	{
+		pla.campus[pla.numCampuses][i] = pathToCampus[i];
+		i++;
+	}
+}
+
+void obtainARC(Game g, int p, path pathToARC)
+{
+	player pla = intToPlayerConversion(g,p);
+	pla.numBQN += -1;
+	pla.numBPS += -1;
+	pla.numArcs += 1;
+	pla.kpi += 2;
+	int i = 0;
+
+	while(pathToARC[i] != '\0')
+	{
+		pla.campus[pla.numArcs][i] = pathToARC[i];
+		i++;
+	}
+}
+
+void addGO8(Game g, int p, path pathToG08)
+{
+	player pla = intToPlayerConversion(g,p);
+	pla.numMTV += -2;
+	pla.numMMONEY += -3;
+	pla.numGo8 += 1;
+	pla.numCampuses += -1;
+	pla.kpi += 10;
+
+	int i = 0;
+
+	while(pathToARC[i] != '\0')
+	{
+		pla.campus[pla.numArcs][i] = pathToARC[i];
+		i++;
+	}
+
 }
 
 // advance the game to the next turn, 
@@ -164,7 +286,7 @@ int getCampus(Game g, path pathToVertex){
     return 0;
 }
 
-int* regionAssociatedWithPOS(position p,int dice)
+int* regionAssociatedWithPOS(path p,int dice)
 {
 	// This function returns EVERY dice roll that would lead to a new student 
 	// for a given campus (i.e. the number on the sorounding hexagons)

@@ -10,7 +10,7 @@ int main (int argc, char * argv[]){
     Game g = newGame (disciplines, dice);
     int gameAlive = TRUE;
     while(gameAlive == TRUE){
-        
+
         int diceValue = diceThrow();
         diceValue += diceThrow();
         printf("%d\n",diceValue);
@@ -40,12 +40,7 @@ int main (int argc, char * argv[]){
             printf("Choose an action:\n");
             
             scanf("%d", &actionChoice);
-            while(i<PATH_LIMIT)
-            {
-                scanf("%c",&currentMove);
-                //movePath[i]= currentMove;
-                i++;
-            }
+            scanf("%s",movePath);
 
 
             scanf("%d", &disciplineFrom);
