@@ -1,19 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "Game.h"
 
 
 typedef struct _player{
     int numPlayer;      //player number
     path campus[150];  //where their campuses are
-    path g08[150]; //where their arc grants are
+    path GO8[150]; //where their arc grants are
     path arc[150]; //where their arc grants are
     int kpi;
     int numArcs;
     int numCampuses;
-    int numGo8;
+    int numGO8;
     int numPatents;
-    int numPapers;
+    int numPublications;
     int numBPS;
     int numTHD;         //student
     int numBQN;         //student
@@ -39,8 +40,13 @@ struct _game{
     player players[NUM_UNIS]; //???
 };
 
-void addCampus(Game g, int p, path pathToCampus);
-void obtainARC(Game g, int p, path pathToARC);
+static void obtainCampus(Game g, int p, path pathToCampus);
+static void obtainARC(Game g, int p, path pathToARC);
+static void obtainGO8(Game g, int p, path pathToGO8);
+static void obtainSpinoff(Game g, int p);
+static int spinoffChance ();
+static void obtainPublication(Game g, int p);
+static void obtainPatent(Game g, int p);
 player intToPlayerConversion(Game g,int playerNum);
 
 
@@ -49,7 +55,7 @@ player intToPlayerConversion(Game g,int playerNum);
 // The game structure stores all global information about the game
 Game newGame (int discipline[], int dice[])
 {
-	Game tmp;
+    Game tmp;
     Game g = malloc(sizeof(*tmp));
     g->dice = 0;
     g->currentTurn = -1;
@@ -75,47 +81,50 @@ Game newGame (int discipline[], int dice[])
     // Set up the campuses
 
     char campusA1[] = {'0'};
-    char campusA2[] =  {'R','L','R','L','R','L','R','L','R','L','L'};
-
+    char campusA2[] = {'R','L','R','L','R','L','R','L','R','L','L'};
     char campusB1[] = {'R','R','L','R','L'};
     char campusB2[] = {'L','R','L','R','L','R','R','L','R','L'};
     char campusC1[] = {'L','R','L','R','L'};
-    char campusC2[]  = {'R','R','L','R','L','L','R','L','R','L'};
+    char campusC2[] = {'R','R','L','R','L','L','R','L','R','L'};
 
     int i = 0;
     g->A.campus[0][0] = '0';
-    while(i<11)
-    {
-    	g->A.campus[1][i] = campusA1[i];
-    	i++;
+    while(i < 2) {
+        g->A.campus[0][i] = campusA1[i];
+        i++;
     }
-    while(i<5)
-    {
-    	g->B.campus[0][i] = campusB1[i];
-    	i++;
+
+    while(i < 11) {
+        g->A.campus[1][i] = campusA2[i];
+        i++;
     }
-    while(i<10)
-    {
-    	g->B.campus[1][i] = campusB2[i];
-    	i++;
+
+    while(i < 5) {
+        g->B.campus[0][i] = campusB1[i];
+        i++;
     }
-    while(i<5)
-    {
-    	g->C.campus[0][i] = campusC1[i];
-    	i++;
+
+    while(i < 10) {
+        g->B.campus[1][i] = campusB2[i];
+        i++;
     }
-    while(i<10)
-    {
-    	g->C.campus[1][i] = campusC2[i];
-    	i++;
+
+    while(i < 5) {
+        g->C.campus[0][i] = campusC1[i];
+        i++;
+    }
+    
+    while(i < 10) {
+        g->C.campus[1][i] = campusC2[i];
+        i++;
     }
 
     //set up the board
     i = 0;
-    while(i<19){
-	    g->Board.regions[i] = discipline[i];
-	    g->Board.roll[i] = dice[i];
-	    i++;
+    while(i < 19) {
+        g->Board.regions[i] = discipline[i];
+        g->Board.roll[i] = dice[i];
+        i++;
     }
     return g;
 }
@@ -135,73 +144,97 @@ void makeAction (Game g, action a){
         if (a.actionCode == PASS){
             g->numTurn++;
         } else if (a.actionCode ==  BUILD_CAMPUS){
-            addCampus(g,p,a.destination);
+            obtainCampus(g, p, a.destination);
         } else if (a.actionCode == BUILD_GO8){
-        	addGO8(Game g,int p);
+            obtainGO8(g, p, a.destination);
         } else if (a.actionCode== OBTAIN_ARC){
-        	obtainARC(g,p,a.destination);
+            obtainARC(g, p, a.destination);
         } else if (a.actionCode == START_SPINOFF){
-        	//startSpinoff(Game g, int p);
-        } else if (a.actionCode == OBTAIN_PUBLICATION){
-        	//obtainPublication(Game g, int p);
-        } else if (a.actionCode == OBTAIN_IP_PATENT){
-        	//obtainIP(Game g, int p)
+            obtainSpinoff(g, p);
         } else if (a.actionCode == RETRAIN_STUDENTS){
-        	//retrainStudents(Game g,player p);
+            //retrainStudents(Game g,player p);
         }
     }
 }
 
-void addCampus(Game g, int p, path pathToCampus)
-{
-	player pla = intToPlayerConversion(g,p);
-	pla.numBQN += -1;
-	pla.numBPS += -1;
-	pla.numMJ += -1;
-	pla.numMTV += -1;
-	pla.numCampuses += 1;
-	pla.kpi += 10;
-	int i = 0;
+static void obtainCampus(Game g, int p, path pathToCampus) {
+    player pla = intToPlayerConversion(g,p);
+    pla.numBQN += -1;
+    pla.numBPS += -1;
+    pla.numMJ += -1;
+    pla.numMTV += -1;
+    pla.numCampuses += 1;
+    pla.kpi += 10;
+    int i = 0;
 
-	while(pathToCampus[i] != '\0')
-	{
-		pla.campus[pla.numCampuses][i] = pathToCampus[i];
-		i++;
-	}
+    while(pathToCampus[i] != '\0') {
+        pla.campus[pla.numCampuses][i] = pathToCampus[i];
+        i++;
+    }
 }
 
-void obtainARC(Game g, int p, path pathToARC)
-{
-	player pla = intToPlayerConversion(g,p);
-	pla.numBQN += -1;
-	pla.numBPS += -1;
-	pla.numArcs += 1;
-	pla.kpi += 2;
-	int i = 0;
+static void obtainARC(Game g, int p, path pathToARC) {
+    player pla = intToPlayerConversion(g,p);
+    pla.numBQN += -1;
+    pla.numBPS += -1;
+    pla.numArcs += 1;
+    pla.kpi += 2;
+    int i = 0;
 
-	while(pathToARC[i] != '\0')
-	{
-		pla.campus[pla.numArcs][i] = pathToARC[i];
-		i++;
-	}
+    while(pathToARC[i] != '\0') {
+        pla.arc[pla.numArcs][i] = pathToARC[i];
+        i++;
+    }
 }
 
-void addGO8(Game g, int p, path pathToG08)
-{
-	player pla = intToPlayerConversion(g,p);
-	pla.numMTV += -2;
-	pla.numMMONEY += -3;
-	pla.numGo8 += 1;
-	pla.numCampuses += -1;
-	pla.kpi += 10;
+static void obtainSpinoff(Game g, int p) {
+    player pla = intToPlayerConversion(g, p);
+    pla.numMJ += -1;
+    pla.numMTV += -1;
+    pla.numMMONEY += -1;
+    int chance = spinoffChance();
+    if (chance == 1){
+        obtainPatent(g, p);
+    } else if (chance == 2 || chance == 3){
+        obtainPublication(g, p);
+    }
+}
 
-	int i = 0;
+static int spinoffChance() {
+    time_t t;
+    int chance = 0;
+    
+    srand((unsigned) time(&t));
+    chance = (1 + rand() % 3);
+    
+    return chance;
+}
 
-	while(pathToARC[i] != '\0')
-	{
-		pla.campus[pla.numArcs][i] = pathToARC[i];
-		i++;
-	}
+static void obtainPublication(Game g, int p) {
+    player pla = intToPlayerConversion(g, p);
+    pla.numPublications += 1;
+}
+
+static void obtainPatent(Game g, int p) {
+    player pla = intToPlayerConversion(g, p);
+    pla.numPatents += 1;
+    pla.kpi += 10;  
+}
+
+static void obtainGO8(Game g, int p, path pathToGO8) {
+    player pla = intToPlayerConversion(g,p);
+    pla.numMTV += -2;
+    pla.numMMONEY += -3;
+    pla.numGO8 += 1;
+    pla.numCampuses += -1;
+    pla.kpi += 10;
+
+    int i = 0;
+
+    while(pathToGO8[i] != '\0') {
+        pla.GO8[pla.numGO8][i] = pathToGO8[i];
+        i++;
+    }
 
 }
 
@@ -219,7 +252,7 @@ void throwDice (Game g, int diceScore){
 
 int diceThrow()
 {
-	int timeNow = (int)time(NULL);
+    int timeNow = (int)time(NULL);
     unsigned int randomDiceNumer = (unsigned)rand()*(timeNow*timeNow) % 6 + 1;
     return randomDiceNumer;
 }
@@ -257,8 +290,8 @@ int getMostARCs (Game g){
 // this is NO_ONE until the first publication is made.
 int getMostPublications (Game g)
 {
-	int playerNumber = NO_ONE;
-	return playerNumber;
+    int playerNumber = NO_ONE;
+    return playerNumber;
 }
 // return the current turn number of the game -1,0,1, ..
 int getTurnNumber (Game g){
@@ -288,9 +321,9 @@ int getCampus(Game g, path pathToVertex){
 
 int* regionAssociatedWithPOS(path p,int dice)
 {
-	// This function returns EVERY dice roll that would lead to a new student 
-	// for a given campus (i.e. the number on the sorounding hexagons)
-	return 0;
+    // This function returns EVERY dice roll that would lead to a new student 
+    // for a given campus (i.e. the number on the sorounding hexagons)
+    return 0;
 }
 
 // the contents of the given edge (ie ARC code or vacent ARC)
@@ -329,20 +362,20 @@ int getARC(Game g, path pathToEdge){
 // Function returns a player from the game based on the player number given as input
 player intToPlayerConversion(Game g,int playerNum)
 {
-	player p;
-	if(playerNum == UNI_A)
-	{
-		p = g->A;
-	}
-	if(playerNum == UNI_B)
-	{
-		p = g->B;
-	}
-	if(playerNum == UNI_C)
-	{
-		p = g->C;
-	}
-	return p;
+    player p;
+    if(playerNum == UNI_A)
+    {
+        p = g->A;
+    }
+    if(playerNum == UNI_B)
+    {
+        p = g->B;
+    }
+    if(playerNum == UNI_C)
+    {
+        p = g->C;
+    }
+    return p;
 }
 
 int isLegalAction (Game g, action a){
@@ -374,16 +407,6 @@ int isLegalAction (Game g, action a){
             legal = TRUE;
         }
     }
-      
-    if (a.actionCode == OBTAIN_PUBLICATION)
-    {
-        legal = TRUE;
-    }
-   
-    if (a.actionCode == OBTAIN_IP_PATENT)
-    {
-        legal = TRUE;
-    }
             
     if (a.actionCode == RETRAIN_STUDENTS){
         if (p.numBPS >= 3 || p.numBQN >= 3 || p.numMJ >= 3 
@@ -398,7 +421,7 @@ int isLegalAction (Game g, action a){
 
 // return the number of KPI points the specified player currently has
 int getKPIpoints (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
+    player p = intToPlayerConversion(g,playerNum);
     int points = p.kpi;
 
     return points;
@@ -406,7 +429,7 @@ int getKPIpoints (Game g, int playerNum){
 
 // return the number of ARC grants the specified player currently has
 int getARCs (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
+    player p = intToPlayerConversion(g,playerNum);
     int numArcs = p.numArcs;
 
     return numArcs;
@@ -414,15 +437,15 @@ int getARCs (Game g, int playerNum){
 
 // return the number of GO8 campuses the specified player currently has
 int getGO8s (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
-    int numGo8 = p.numGo8;
+    player p = intToPlayerConversion(g, playerNum);
+    int numGO8 = p.numGO8;
 
-    return numGo8;
+    return numGO8;
 }
 
 // return the number of normal Campuses the specified player currently has
 int getCampuses (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
+    player p = intToPlayerConversion(g,playerNum);
     int numCampus = p.numCampuses;
 
     return numCampus;
@@ -430,7 +453,7 @@ int getCampuses (Game g, int playerNum){
 
 // return the number of IP Patents the specified player currently has
 int getIPs (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
+    player p = intToPlayerConversion(g,playerNum);
     int numPatents = p.numPatents;
 
     return numPatents;
@@ -438,16 +461,16 @@ int getIPs (Game g, int playerNum){
 
 // return the number of Publications the specified player currently has
 int getPublications (Game g, int playerNum){
-	player p = intToPlayerConversion(g,playerNum);
-    int numPapers = p.numPapers;
+    player p = intToPlayerConversion(g,playerNum);
+    int numPublications = p.numPublications;
 
-    return numPapers;
+    return numPublications;
 }
 
 // return the number of students of the specified discipline type 
 // the specified player currently has
 int getStudents (Game g, int playerNum, int discipline){
-	player p = intToPlayerConversion(g,playerNum);
+    player p = intToPlayerConversion(g,playerNum);
     int numStudents = 0;
     numStudents += p.numTHD;
     numStudents += p.numBPS;
@@ -466,9 +489,4 @@ int getExchangeRate (Game g, int playerNum, int disciplineFrom, int disciplineTo
 {
     
     return 0;
-}/*
-int main(void)
-{
-	return 0;
 }
-*/
